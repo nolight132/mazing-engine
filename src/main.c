@@ -13,16 +13,20 @@ int main()
     srand(time(NULL));
     int size = 33;
     int **map = generateMaze(size);
-    printMap(map, size);
+    // printMap(map, size);
 
     free2DArray(map, size);
     clock_t end = clock();
 
-    double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+    // double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
 
-    printf("Took %fs\n", time_spent);
+    // printf("Took %fs\n", time_spent);
 
     return 0;
+}
+
+void renderLoop()
+{
 }
 
 void free2DArray(int **array, int rows)
