@@ -8,15 +8,15 @@ void free2DArray(int **array, int rows);
 
 int main()
 {
-    clock_t start = clock();
+    // clock_t start = clock();
 
     srand(time(NULL));
     int size = 33;
     int **map = generateMaze(size);
-    // printMap(map, size);
+    printMap(map, size);
 
     free2DArray(map, size);
-    clock_t end = clock();
+    // clock_t end = clock();
 
     // double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
 

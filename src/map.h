@@ -98,7 +98,6 @@ void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vecto
         pathIndex--;
         generateBranches(map, path[pathIndex], visitedTiles, d, path, pathIndex);
     }
-    return;
 }
 Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount)
 {
