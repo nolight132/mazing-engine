@@ -2,15 +2,15 @@
 #define TYPES_H
 
 typedef struct {
-    int y;
-    int x;
+    float y;
+    float x;
 } Vector2D;
 
 typedef struct
 {
-    int y;
-    int x;
-    int z;
+    float y;
+    float x;
+    float z;
 } Vector3D;
 
 #endif  // TYPES_H

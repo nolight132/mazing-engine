@@ -53,7 +53,7 @@ void generatePath(int **map, int d)
     {
         visitedTiles[i] = (bool *)malloc(d * sizeof(bool));
     }
-    // Initialize visitedTiles with false values
+    // Initialize visitedTiles with walls
     for (int i = 0; i < d; i++)
     {
         for (int j = 0; j < d; j++)
@@ -62,8 +62,8 @@ void generatePath(int **map, int d)
         }
     }
 
-    visitedTiles[pos.y][pos.x] = true;
-    map[pos.y][pos.x] = PATH;
+    visitedTiles[(int)pos.y][(int)pos.x] = true;
+    map[(int)pos.y][(int)pos.x] = PATH;
     path[0] = pos;
 
     generateBranches(map, pos, visitedTiles, d, path, pathIndex);
@@ -81,13 +81,13 @@ void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vecto
     if (validCount > 0)
     {
         Vector2D randDir = getRandDir(validDirs, validCount);
-        Vector2D target = {pos.y + randDir.y * 2, pos.x + randDir.x * 2};
+        Vector2D target = {(int)pos.y + randDir.y * 2, (int)pos.x + randDir.x * 2};
         // Fill in the target
-        map[target.y][target.x] = PATH;
+        map[(int)target.y][(int)target.x] = PATH;
         // Fill in the tile between the current pos and the target
-        map[target.y - randDir.y][target.x - randDir.x] = PATH;
+        map[(int)target.y - (int)randDir.y][(int)target.x - (int)randDir.x] = PATH;
         pos = target;
-        visitedTiles[pos.y][pos.x] = true;
+        visitedTiles[(int)pos.y][(int)pos.x] = true;
         // Add pos to path
         path[pathIndex] = pos;
         (pathIndex)++;
@@ -98,7 +98,6 @@ void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vecto
         pathIndex--;
         generateBranches(map, path[pathIndex], visitedTiles, d, path, pathIndex);
     }
-    return;
 }
 Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount)
 {
@@ -108,7 +107,7 @@ Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount
     for (int i = 0; i < 4; i++)
     {
         Vector2D target = {pos.y + dirs[i].y * 2, pos.x + dirs[i].x * 2};
-        if (target.y > 0 && target.y < d - 1 && target.x > 0 && target.x < d - 1 && !visitedTiles[target.y][target.x])
+        if (target.y > 0 && target.y < d - 1 && target.x > 0 && target.x < d - 1 && !visitedTiles[(int)target.y][(int)target.x])
         {
             validDirs[*validCount] = dirs[i];
             (*validCount)++;
