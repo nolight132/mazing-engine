@@ -1,7 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef struct {
+typedef struct
+{
     float y;
     float x;
 } Vector2D;
