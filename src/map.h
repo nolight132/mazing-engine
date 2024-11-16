@@ -40,11 +40,10 @@ int **generateMaze(int d)
 }
 void generatePath(int **map, int d)
 {
-    if (d < 5)
-        return;
+    if (d < 5) return;
 
-    Vector2D pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2};
-    Vector2D path[(int)(pow(floor(d / 2), 2))];
+    Vector2D pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2}; // Random starting position
+    Vector2D path[(int)(pow(floor(d / 2), 2))]; // Max path length
 
     int pathIndex = 1;
     bool **visitedTiles = (bool **)malloc(d * sizeof(bool *));

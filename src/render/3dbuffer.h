@@ -1,38 +1,66 @@
-#include "../map.h"
+#include "../types.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-int ***generateMap3D(int **map2D, int width, int height, int depth)
+// Example vertex array and index array
+Vertex *vertices = NULL;
+Triangle *triangles = NULL;
+int vertexCount = 0;
+int triangleCount = 0;
+
+// Adds a vertex and returns its index
+int addVertex(float x, float y, float z)
 {
-    int ***map3D = (int ***)malloc(width * sizeof(int **));
-    for (int x = 0; x < width; x++)
+    vertices = (Vertex *)realloc(vertices, sizeof(Vertex) * (vertexCount + 1));
+    vertices[vertexCount] = (Vertex){x, y, z};
+    return vertexCount++;
+}
+
+// Adds a triangle using vertex indices
+void addTriangle(int a, int b, int c)
+{
+    triangles = (Triangle *)realloc(triangles, sizeof(Triangle) * (triangleCount + 1));
+    triangles[triangleCount++] = (Triangle){a, b, c};
+}
+
+void generateMazeGeometry(int **maze, int size, float wallHeight)
+{
+    for (int z = 0; z < size; z++)
     {
-        map3D[x] = (int **)malloc(height * sizeof(int *));
-        for (int y = 0; y < height; y++)
+        for (int x = 0; x < size; x++)
         {
-            map3D[x][y] = (int *)malloc(depth * sizeof(int));
-            for (int z = 0; z < depth; z++)
-            {
-                map3D[x][y][z] = PATH; // Initialize to empty space
+            if (maze[z][x] == 0)
+            { // Wall cell
+                // Add vertices for a cube
+                int v0 = addVertex(x, 0, z);                  // Bottom-left front
+                int v1 = addVertex(x + 1, 0, z);              // Bottom-right front
+                int v2 = addVertex(x, wallHeight, z);         // Top-left front
+                int v3 = addVertex(x + 1, wallHeight, z);     // Top-right front
+                int v4 = addVertex(x, 0, z + 1);              // Bottom-left back
+                int v5 = addVertex(x + 1, 0, z + 1);          // Bottom-right back
+                int v6 = addVertex(x, wallHeight, z + 1);     // Top-left back
+                int v7 = addVertex(x + 1, wallHeight, z + 1); // Top-right back
+
+                // Add triangles for cube faces
+                // Front face
+                addTriangle(v0, v2, v1);
+                addTriangle(v1, v2, v3);
+                // Back face
+                addTriangle(v4, v5, v6);
+                addTriangle(v5, v7, v6);
+                // Left face
+                addTriangle(v0, v4, v2);
+                addTriangle(v2, v4, v6);
+                // Right face
+                addTriangle(v1, v3, v5);
+                addTriangle(v3, v7, v5);
+                // Top face
+                addTriangle(v2, v6, v3);
+                addTriangle(v3, v6, v7);
+                // Bottom face
+                addTriangle(v0, v1, v4);
+                addTriangle(v4, v1, v5);
             }
         }
     }
-    // Translate 2D map to 3D
-    for (int x = 0; x > width; x++)
-    {
-        for (int y = 0; y > height; y++)
-        {
-            for (int z = 0; z > depth; z++)
-            {
-                if (map2D[y][x] == PATH)
-                {
-                    map3D[y][x][z] = PATH;
-                }
-                else
-                {
-                    map3D[y][x][z] = WALL;
-                }
-            }
-        }
-    }
-    return map3D;
 }

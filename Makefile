@@ -3,6 +3,8 @@ CFLAGS = -Wall -Wextra -I./src
 SRCDIR = src
 BINDIR = bin
 SOURCES = $(wildcard $(SRCDIR)/*.c)
+LDFLAGS = -lncurses
+FRAMEWORKS = 
 OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(BINDIR)/%.o)
 TARGET = $(BINDIR)/out
 
@@ -11,7 +13,7 @@ all: $(TARGET)
 
 # Linking step
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS) $(FRAMEWORKS)
 
 # Compilation step
 $(BINDIR)/%.o: $(SRCDIR)/%.c
