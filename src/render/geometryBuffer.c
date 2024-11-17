@@ -1,6 +1,3 @@
-#ifndef GEOMETRYBUFFER_H
-#define GEOMETRYBUFFER_H
-
 #include "../types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,5 +64,3 @@ void generateMazeGeometry(int **maze, int size, float wallHeight)
         }
     }
 }
-
-#endif // GEOMETRYBUFFER_H
