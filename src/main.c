@@ -1,13 +1,12 @@
-#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
-#include <unistd.h>
 
-#include "map/map.h"
+#include "map/map.c"
 #include "memoryManagement.h"
-#include "render/3dbuffer.h"
+#include "render/geometryBuffer.c"
+#include "render/screen.c"
 
 void free2DArray(int **array, int rows);
 
@@ -31,16 +30,6 @@ int main()
     // {
     //     printf("  (%d, %d, %d)\n", triangles[i].a, triangles[i].b, triangles[i].c);
     // }
-
-    // Initialize ncurses
-    initscr();
-    cbreak();              // Disable line buffering
-    noecho();              // Disable echoing of typed characters
-    keypad(stdscr, TRUE);  // Enable special keys
-    curs_set(0);           // Hide the default cursor
-    nodelay(stdscr, TRUE); // Make getch non-blocking
-
-    const int frameDuration = 1000000 / 60; // 16.67 ms per frame
 
     endwin();
 

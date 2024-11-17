@@ -1,6 +1,3 @@
-#ifndef MAP_H
-#define MAP_H
-
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -40,10 +37,11 @@ int **generateMaze(int d)
 }
 void generatePath(int **map, int d)
 {
-    if (d < 5) return;
+    if (d < 5)
+        return;
 
     Vector2D pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2}; // Random starting position
-    Vector2D path[(int)(pow(floor(d / 2), 2))]; // Max path length
+    Vector2D path[(int)(pow(floor(d / 2.0f), 2))];                                       // Max path length
 
     int pathIndex = 1;
     bool **visitedTiles = (bool **)malloc(d * sizeof(bool *));
@@ -106,7 +104,8 @@ Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount
     for (int i = 0; i < 4; i++)
     {
         Vector2D target = {pos.y + dirs[i].y * 2, pos.x + dirs[i].x * 2};
-        if (target.y > 0 && target.y < d - 1 && target.x > 0 && target.x < d - 1 && !visitedTiles[(int)target.y][(int)target.x])
+        if (target.y > 0 && target.y < d - 1 && target.x > 0 && target.x < d - 1 &&
+            !visitedTiles[(int)target.y][(int)target.x])
         {
             validDirs[*validCount] = dirs[i];
             (*validCount)++;
@@ -148,5 +147,3 @@ void printTile(int type)
             break;
     }
 }
-
-#endif // MAP_H
