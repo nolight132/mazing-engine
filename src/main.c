@@ -30,6 +30,7 @@ int main()
         drawCall(screen);
     }
     endwin();
+    printf("Resolution: %dx%d\n", screen.width, screen.height);
 
     // Free memory
     free2DArray(maze, size);
