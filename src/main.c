@@ -29,10 +29,10 @@ int main()
     { // Quit on 'q'
         draw(screen);
     }
-
     endwin();
 
     // Free memory
     free2DArray(maze, size);
+    free(aabbs);
     return 0;
 }
