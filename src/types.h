@@ -22,4 +22,10 @@ typedef struct
     float z;
 } Vector3D;
 
+typedef struct
+{
+    double yaw;
+    double pitch;
+} Rotation;
+
 #endif  // TYPES_H
