@@ -35,5 +35,6 @@ void drawLoop()
         {
             usleep(sleepTime); // Sleep to maintain the frame rate
         }
+        endwin();
     }
 }

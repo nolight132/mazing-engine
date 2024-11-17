@@ -31,7 +31,7 @@ int main()
     //     printf("  (%d, %d, %d)\n", triangles[i].a, triangles[i].b, triangles[i].c);
     // }
 
-    endwin();
+    drawLoop();
 
     // Free memory
     free(vertices);
