@@ -5,13 +5,6 @@
 
 #include "../types.h"
 
-enum TileType
-{
-    WALL,
-    PATH,
-    BORDER
-};
-
 void generatePath(int **map, int d);
 Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount);
 Vector2D getRandDir(Vector2D dirs[], int count);

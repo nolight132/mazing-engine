@@ -15,14 +15,8 @@ int main()
     srand(time(NULL));
     int size = 17;
     int **maze = generateMaze(size);
-    generateMazeGeometry(maze, size, 1.0f);
 
-    // Print results (for debugging)
-    printf("Vertices (%d):\n", vertexCount);
-    for (int i = 0; i < vertexCount; i++)
-    {
-        printf("  (%f, %f, %f)\n", vertices[i].x, vertices[i].y, vertices[i].z);
-    }
+    generateAABBs(maze, size, aabbs, &aabbCount);
     printMap(maze, size);
 
     // printf("Triangles (%d):\n", triangleCount);
@@ -34,8 +28,6 @@ int main()
     drawLoop();
 
     // Free memory
-    free(vertices);
-    free(triangles);
     free2DArray(maze, size);
     return 0;
 }
