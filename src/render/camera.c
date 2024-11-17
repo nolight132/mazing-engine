@@ -25,12 +25,12 @@ void rotate(Camera *camera, Rotation rotation)
     camera->rotation.pitch += rotation.pitch;
 }
 
-void init(Camera *camera, int FOV, Vector3D position, Rotation rotation)
+void initCamera(Camera *camera, int FOV, Vector3D position, Rotation rotation)
 {
     camera->FOV = FOV;
     camera->position = position;
     camera->rotation = rotation;
     camera->move = move;
     camera->rotate = rotate;
-    camera->init = init;
+    camera->init = initCamera;
 }
