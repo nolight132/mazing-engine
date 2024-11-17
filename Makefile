@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I./src
+CFLAGS = -Wall -Wextra -I./src -g
 SRCDIR = src
 BINDIR = bin
 SOURCES = $(wildcard $(SRCDIR)/*.c)
