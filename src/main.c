@@ -12,22 +12,22 @@ void free2DArray(int **array, int rows);
 int main()
 {
     srand(time(NULL));
-    int size = 17;
+    int size = 33;
     int **maze = generateMaze(size);
-    generateAABBs(maze, size, aabbs, &aabbCount);
+    AABB *aabbs = generateAABBs(maze, size, &aabbCount);
 
-    printf("AABBs: %d\n", aabbCount);
-    printMap(maze, size);
-    // for (int i = 0; i < aabbCount; i++)
-    // {
-    //     printf("AABB %d: (%f, %f, %f) - (%f, %f, %f)\n", i + 1, aabbs[i].min.x, aabbs[i].min.y, aabbs[i].min.z,
-    //            aabbs[i].max.x, aabbs[i].max.y, aabbs[i].max.z);
-    // }
+    printf("Geometry data:\n");
+    for (int i = 0; i < aabbCount; i++)
+    {
+        printf("AABB %d: (%f, %f, %f) - (%f, %f, %f)\n", i + 1, aabbs[i].min.x, aabbs[i].min.y, aabbs[i].min.z,
+               aabbs[i].max.x, aabbs[i].max.y, aabbs[i].max.z);
+    }
     Screen screen;
     initDraw(&screen);
     while (getch() != 'q')
     { // Quit on 'q'
-        draw(screen);
+        // Logic goes here
+        drawCall(screen);
     }
     endwin();
 

@@ -1,11 +1,12 @@
 #include "../types.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 int aabbCount = 0;
-AABB *aabbs;
 
-void generateAABBs(int **maze, int size, AABB *aabbs, int *aabbCount)
+AABB *generateAABBs(int **maze, int size, int *aabbCount)
 {
+    AABB *aabbs = NULL;
     *aabbCount = 0;
     for (int z = 0; z < size; z++)
     {
@@ -13,11 +14,22 @@ void generateAABBs(int **maze, int size, AABB *aabbs, int *aabbCount)
         {
             if (maze[z][x] == WALL)
             {
-                aabbs = (AABB *)realloc(aabbs, sizeof(AABB) * (*aabbCount + 1));
-                aabbs[*aabbCount].min = (Vector3D){x, 0, z};
-                aabbs[*aabbCount].max = (Vector3D){(x + 1), 1, (z + 1)};
+                AABB *temp = (AABB *)realloc(aabbs, sizeof(AABB) * (*aabbCount + 1));
+                if (temp == NULL)
+                {
+                    printf("Memory allocation failed\n");
+                    free(aabbs);
+                    exit(1);
+                }
+                else
+                {
+                    aabbs = temp;
+                }
+                aabbs[*aabbCount].min = (Vector3D){0, x, z};
+                aabbs[*aabbCount].max = (Vector3D){1, (x + 1), (z + 1)};
                 (*aabbCount)++;
             }
         }
     }
+    return aabbs;
 }
