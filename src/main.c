@@ -1,7 +1,7 @@
+#include "graphics/geometryBuffer.c"
+#include "graphics/screen.c"
 #include "map/map.c"
 #include "memoryManagement.h"
-#include "render/geometryBuffer.c"
-#include "render/screen.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
