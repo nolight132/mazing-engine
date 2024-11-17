@@ -28,10 +28,10 @@ void initDraw(Screen *screen)
     curs_set(0);           // Hide the default cursor
     nodelay(stdscr, TRUE); // Make getch non-blocking
 
-    initScreen(screen, COLS, LINES, 75);
+    initScreen(screen, COLS, LINES, 60);
 }
 
-void draw(Screen screen)
+void drawCall(Screen screen)
 {
     double frameDuration = 1000000000.0 / screen.fps;
     struct timespec start, end;
@@ -40,8 +40,8 @@ void draw(Screen screen)
 
     // Record the start time of the frame
     clock_gettime(CLOCK_MONOTONIC, &start); // Get current time (monotonic clock)
-
     clear();
+    // Draw logic goes here
     mvprintw(0, 0, "Press 'q' to quit.");
 
     // Calculate how long we need to sleep to maintain 60 FPS
