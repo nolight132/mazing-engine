@@ -5,7 +5,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "map.h"
+#include "map/map.h"
 #include "memoryManagement.h"
 #include "render/3dbuffer.h"
 
@@ -14,8 +14,23 @@ void free2DArray(int **array, int rows);
 int main()
 {
     srand(time(NULL));
-    int size = 33;
-    int **map = generateMaze(size);
+    int size = 17;
+    int **maze = generateMaze(size);
+    generateMazeGeometry(maze, size, 1.0f);
+
+    // Print results (for debugging)
+    printf("Vertices (%d):\n", vertexCount);
+    for (int i = 0; i < vertexCount; i++)
+    {
+        printf("  (%f, %f, %f)\n", vertices[i].x, vertices[i].y, vertices[i].z);
+    }
+    printMap(maze, size);
+
+    // printf("Triangles (%d):\n", triangleCount);
+    // for (int i = 0; i < triangleCount; i++)
+    // {
+    //     printf("  (%d, %d, %d)\n", triangles[i].a, triangles[i].b, triangles[i].c);
+    // }
 
     // Initialize ncurses
     initscr();
@@ -27,30 +42,11 @@ int main()
 
     const int frameDuration = 1000000 / 60; // 16.67 ms per frame
 
-    while (getch() != 'q')
-    { // Quit on 'q'
-        // Record the start time of the frame
-        struct timeval start;
-        gettimeofday(&start, NULL);
-
-        clear();
-        mvprintw(0, 0, "Press 'q' to quit.");
-        refresh();
-
-        // Calculate how long we need to sleep to maintain 60 FPS
-        struct timeval end;
-        gettimeofday(&end, NULL);
-
-        int frameTime = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-        int sleepTime = frameDuration - frameTime;
-
-        if (sleepTime > 0)
-        {
-            usleep(sleepTime); // Sleep to maintain the frame rate
-        }
-    }
     endwin();
 
-    free2DArray(map, size);
+    // Free memory
+    free(vertices);
+    free(triangles);
+    free2DArray(maze, size);
     return 0;
 }
