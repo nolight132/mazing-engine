@@ -3,6 +3,7 @@
 #include <types.h>
 
 int aabbCount = 0;
+AABB *aabbs = NULL;
 
 AABB *generateAABBs(int **maze, int size, int *aabbCount)
 {
@@ -32,4 +33,9 @@ AABB *generateAABBs(int **maze, int size, int *aabbCount)
         }
     }
     return aabbs;
+}
+
+void initGeometry(int **maze, int size)
+{
+    aabbs = generateAABBs(maze, size, &aabbCount);
 }
