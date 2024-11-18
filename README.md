@@ -1,7 +1,9 @@
 # MazingEngine 🚀
 
-MazingEngine is an ongoing project aimed at creating a terminal-based 3D maze visualization program using [AABBs](https://en.wikipedia.org/wiki/Bounding_volume) and raycasting.
+MazingEngine is an **ongoing** project aimed at creating a terminal-based 3D maze visualization program using [AABBs](https://en.wikipedia.org/wiki/Bounding_volume) and raycasting.
 It will generate random mazes and render them in a first-person perspective using ASCII characters.
+
+## 🚧 This project is still in its early stages, most of the work is done in ```dev-renderer``` branch.
 
 ## Features
 
