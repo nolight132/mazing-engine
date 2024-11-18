@@ -1,8 +1,11 @@
-#include "../types.h"
+#ifndef CAMERA_H
+#define CAMERA_H
+
+#include <types.h>
 
 typedef struct Camera
 {
-    int FOV;
+    int fov;
     Vector3D position;
     Rotation rotation;
 
@@ -12,25 +15,26 @@ typedef struct Camera
     void (*init)(struct Camera *, int, Vector3D, Rotation);
 } Camera;
 
-void move(Camera *camera, Vector3D direction)
+void cameraMove(Camera *camera, Vector3D direction)
 {
     camera->position.x += direction.x;
     camera->position.y += direction.y;
     camera->position.z += direction.z;
 }
 
-void rotate(Camera *camera, Rotation rotation)
+void cameraRotate(Camera *camera, Rotation rotation)
 {
-    camera->rotation.yaw += rotation.yaw;
-    camera->rotation.pitch += rotation.pitch;
+    camera->rotation = rotation;
 }
 
-void initCamera(Camera *camera, int FOV, Vector3D position, Rotation rotation)
+void initCamera(Camera *camera, int fov, Vector3D position, Rotation rotation)
 {
-    camera->FOV = FOV;
+    camera->fov = fov;
     camera->position = position;
     camera->rotation = rotation;
-    camera->move = move;
-    camera->rotate = rotate;
+    camera->move = cameraMove;
+    camera->rotate = cameraRotate;
     camera->init = initCamera;
 }
+
+#endif // CAMERA_H

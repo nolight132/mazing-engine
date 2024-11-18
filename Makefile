@@ -1,12 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I./src -g
+CFLAGS = -Iinclude -Wall -Wextra -g
 SRCDIR = src
 BINDIR = bin
-SOURCES = $(wildcard $(SRCDIR)/*.c)
+SOURCES = $(wildcard $(SRCDIR)/**/*.c) $(SRCDIR)/*.c
 LDFLAGS = -lncurses
 FRAMEWORKS = 
 OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(BINDIR)/%.o)
 TARGET = $(BINDIR)/out
+
+# Debug output
+$(info SOURCES = $(SOURCES))
+$(info OBJECTS = $(OBJECTS))
 
 # Default target
 all: $(TARGET)

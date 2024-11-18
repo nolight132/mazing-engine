@@ -1,5 +1,5 @@
-#include "../types.h"
 #include <stdbool.h>
+#include <types.h>
 
 const char *gradient = "@%#*+=-:. "; // Darkest to lightest
 const int gradientLength = 10;       // Number of gradient levels

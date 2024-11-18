@@ -28,8 +28,8 @@ typedef struct {
 
 typedef struct
 {
-    double yaw;
-    double pitch;
+    double yaw; // Rotation around the y-axis
+    double pitch; // Rotation around the x-axis
 } Rotation;
 
 #endif  // TYPES_H
