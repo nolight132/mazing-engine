@@ -15,7 +15,7 @@ void initDraw(Screen *screen, Camera *camera)
     nodelay(stdscr, TRUE); // Make getch non-blocking
 
     initScreen(screen, COLS, LINES, 60);
-    initCamera(camera, 60, (Vector3D){0.5, 0.5, 0.5}, (Rotation){0, 0});
+    initCamera(camera, 60, (Vector3){0.5, 0.5, 0.5}, (Rotation){0, 0});
 }
 
 void drawCall(Screen screen, Camera camera)

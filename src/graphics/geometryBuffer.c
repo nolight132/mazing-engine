@@ -26,8 +26,8 @@ AABB *generateAABBs(int **maze, int size, int *aabbCount)
                 {
                     aabbs = temp;
                 }
-                aabbs[*aabbCount].min = (Vector3D){0, x, z};
-                aabbs[*aabbCount].max = (Vector3D){1, (x + 1), (z + 1)};
+                aabbs[*aabbCount].min = (Vector3){0, x, z};
+                aabbs[*aabbCount].max = (Vector3){1, (x + 1), (z + 1)};
                 (*aabbCount)++;
             }
         }

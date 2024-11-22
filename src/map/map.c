@@ -26,8 +26,8 @@ void generatePath(int **map, int d)
     if (d < 5)
         return;
 
-    Vector2D pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2}; // Random starting position
-    Vector2D path[(int)(pow(floor(d / 2.0f), 2))];                                       // Max path length
+    Vector2 pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2}; // Random starting position
+    Vector2 path[(int)(pow(floor(d / 2.0f), 2))];                                       // Max path length
 
     int pathIndex = 1;
     bool **visitedTiles = (bool **)malloc(d * sizeof(bool *));
@@ -57,14 +57,14 @@ void generatePath(int **map, int d)
     }
     free(visitedTiles);
 }
-void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vector2D path[], int pathIndex)
+void generateBranches(int **map, Vector2 pos, bool **visitedTiles, int d, Vector2 path[], int pathIndex)
 {
     int validCount = 0;
-    Vector2D *validDirs = getValidDirs(pos, visitedTiles, d, &validCount);
+    Vector2 *validDirs = getValidDirs(pos, visitedTiles, d, &validCount);
     if (validCount > 0)
     {
-        Vector2D randDir = getRandDir(validDirs, validCount);
-        Vector2D target = {(int)pos.y + randDir.y * 2, (int)pos.x + randDir.x * 2};
+        Vector2 randDir = getRandDir(validDirs, validCount);
+        Vector2 target = {(int)pos.y + randDir.y * 2, (int)pos.x + randDir.x * 2};
         // Fill in the target
         map[(int)target.y][(int)target.x] = PATH;
         // Fill in the tile between the current pos and the target
@@ -82,14 +82,14 @@ void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vecto
         generateBranches(map, path[pathIndex], visitedTiles, d, path, pathIndex);
     }
 }
-Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount)
+Vector2 *getValidDirs(Vector2 pos, bool **visitedTiles, int d, int *validCount)
 {
-    Vector2D dirs[] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    Vector2D *validDirs = (Vector2D *)malloc(4 * sizeof(Vector2D));
+    Vector2 dirs[] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    Vector2 *validDirs = (Vector2 *)malloc(4 * sizeof(Vector2));
     *validCount = 0;
     for (int i = 0; i < 4; i++)
     {
-        Vector2D target = {pos.y + dirs[i].y * 2, pos.x + dirs[i].x * 2};
+        Vector2 target = {pos.y + dirs[i].y * 2, pos.x + dirs[i].x * 2};
         if (target.y > 0 && target.y < d - 1 && target.x > 0 && target.x < d - 1 &&
             !visitedTiles[(int)target.y][(int)target.x])
         {
@@ -99,11 +99,11 @@ Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount
     }
     return validDirs;
 }
-Vector2D getRandDir(Vector2D dirs[], int count)
+Vector2 getRandDir(Vector2 dirs[], int count)
 {
     if (count == 0)
     {
-        return (Vector2D){0, 0};
+        return (Vector2){0, 0};
     }
     return dirs[rand() % count];
 }

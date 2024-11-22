@@ -7,9 +7,9 @@
 
 int **generateMaze(int d);
 void generatePath(int **map, int d);
-Vector2D *getValidDirs(Vector2D pos, bool **visitedTiles, int d, int *validCount);
-Vector2D getRandDir(Vector2D dirs[], int count);
-void generateBranches(int **map, Vector2D pos, bool **visitedTiles, int d, Vector2D *path, int pathIndex);
+Vector2 *getValidDirs(Vector2 pos, bool **visitedTiles, int d, int *validCount);
+Vector2 getRandDir(Vector2 dirs[], int count);
+void generateBranches(int **map, Vector2 pos, bool **visitedTiles, int d, Vector2 *path, int pathIndex);
 void printMap(int **map, int size);
 void printTile(int type);
 

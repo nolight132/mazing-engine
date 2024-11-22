@@ -4,7 +4,7 @@
 const char *gradient = "@%#*+=-:. "; // Darkest to lightest
 const int gradientLength = 10;       // Number of gradient levels
 
-bool rayIntersectsAABB(Vector3D rayOrigin, Vector3D rayDir, AABB box, float *t)
+bool rayIntersectsAABB(Vector3 rayOrigin, Vector3 rayDir, AABB box, float *t)
 {
     float tMin = (box.min.x - rayOrigin.x) / rayDir.x;
     float tMax = (box.max.x - rayOrigin.x) / rayDir.x;
