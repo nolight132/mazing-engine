@@ -10,11 +10,11 @@
 #include <time.h>
 #include <unistd.h>
 
+const int size = 33;
+
 int main()
 {
     srand(time(NULL));
-
-    int size = 33;
     initGeometry(generateMaze(size), size);
 
     Screen screen = {0};
@@ -46,9 +46,8 @@ int main()
         // Calculate and display FPS
         int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
         float frameTimeF = (float)frameTime / 1e6;
-        float sleepTimeF = (float)sleepTime / 1e6;
-        mvprintw(1, 0, "sleepTime: %f\n", sleepTimeF);
-        mvprintw(4, 0, "frameTime: %f\n", frameTimeF);
+        mvprintw(1, 0, "Res: %dx%d\n", screen.width, screen.height);
+        mvprintw(4, 0, "frameTime: %.2f ms\n", frameTimeF);
         mvprintw(5, 0, "%d FPS", currentFps);
         refresh();
     }
