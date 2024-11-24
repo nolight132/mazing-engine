@@ -28,6 +28,12 @@ typedef struct {
 
 typedef struct
 {
+    Vector3 origin;
+    Vector3 direction;
+} Ray;
+
+typedef struct
+{
     double yaw; // Rotation around the y-axis
     double pitch; // Rotation around the x-axis
 } Rotation;
