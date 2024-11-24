@@ -8,9 +8,9 @@ FRAMEWORKS =
 OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(BINDIR)/%.o)
 TARGET = $(BINDIR)/out
 
-# Debug output
-$(info SOURCES = $(SOURCES))
-$(info OBJECTS = $(OBJECTS))
+# # Debug output
+# $(info SOURCES = $(SOURCES))
+# $(info OBJECTS = $(OBJECTS))
 
 # Default target
 all: $(TARGET)
