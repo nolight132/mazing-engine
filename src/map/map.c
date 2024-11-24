@@ -26,8 +26,8 @@ void generatePath(int **map, int d)
     if (d < 5)
         return;
 
-    Vector2 pos = {(rand() % ((d - 3) / 2)) * 2 + 2, (rand() % ((d - 3) / 2)) * 2 + 2}; // Random starting position
-    Vector2 path[(int)(pow(floor(d / 2.0f), 2))];                                       // Max path length
+    Vector2 pos = {floor(d / 2.0f), floor(d / 2.0f)}; // Fixed starting position
+    Vector2 path[(int)(pow(floor(d / 2.0f), 2))];     // Max path length
 
     int pathIndex = 1;
     bool **visitedTiles = (bool **)malloc(d * sizeof(bool *));
