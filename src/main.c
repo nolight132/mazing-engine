@@ -63,6 +63,10 @@ int main()
     // Debug print
     debugPrintAABB(aabbs, aabbCount);
 
+    // Free memory
+    free2DArray(maze, size);
+    free(aabbs);
+
     return 0;
 }
 
