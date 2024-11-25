@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <types.h>
 
-int aabbCount = 0;
-AABB *aabbs = NULL;
-
 AABB *generateAABBs(int **maze, int size, int *aabbCount)
 {
     AABB *aabbs = NULL;
@@ -35,7 +32,7 @@ AABB *generateAABBs(int **maze, int size, int *aabbCount)
     return aabbs;
 }
 
-void initGeometry(int **maze, int size)
+void initGeometry(AABB **aabbs, int *aabbCount, int **maze, int size)
 {
-    aabbs = generateAABBs(maze, size, &aabbCount);
+    *aabbs = generateAABBs(maze, size, aabbCount);
 }

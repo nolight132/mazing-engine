@@ -16,7 +16,11 @@ const int size = 33;
 int main()
 {
     srand(time(NULL));
-    initGeometry(generateMaze(size), size);
+
+    int aabbCount = 0;
+    AABB *aabbs = NULL;
+    int **maze = generateMaze(size);
+    initGeometry(&aabbs, &aabbCount, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
@@ -57,9 +61,7 @@ int main()
     endwin();
 
     // Debug print
-    // debugPrintAABB(aabbs, aabbCount);
-    // printf("Resolution: %dx%d\n", screen.width, screen.height);
-    // printf("Resolution: %dx%d\n", COLS, LINES);
+    debugPrintAABB(aabbs, aabbCount);
 
     return 0;
 }
