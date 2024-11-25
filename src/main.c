@@ -4,6 +4,7 @@
 #include <graphics/screen.h>
 #include <main.h>
 #include <map/map.h>
+#include <math.h>
 #include <memory/memoryManagement.h>
 #include <ncurses.h>
 #include <stdlib.h>
@@ -19,7 +20,9 @@ int main()
 
     Screen screen = {0};
     Camera camera = {0};
-    initDraw(&screen, &camera);
+    initDraw();
+    initScreen(&screen, COLS, LINES, 240);
+    initCamera(&camera, 60, (Vector3){1, floor(size / 2.0f), floor(size / 2.0f)}, (Rotation){0, 45});
 
     double frameDuration = 1e9 / screen.fps;
     long long frameTime = 0;

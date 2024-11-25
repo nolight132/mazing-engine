@@ -1,13 +1,12 @@
 #include <graphics/camera.h>
 #include <graphics/raycast.h>
 #include <graphics/screen.h>
-#include <math.h>
 #include <ncurses.h>
 #include <stdio.h>
 
 extern const int size;
 
-void initDraw(Screen *screen, Camera *camera)
+void initDraw()
 {
     // Initialize ncurses
     printf("Initializing ncurses...\n");
@@ -17,9 +16,6 @@ void initDraw(Screen *screen, Camera *camera)
     keypad(stdscr, TRUE);  // Enable special keys
     curs_set(0);           // Hide the default cursor
     nodelay(stdscr, TRUE); // Make getch non-blocking
-
-    initScreen(screen, COLS, LINES, 240);
-    initCamera(camera, 60, (Vector3){1, floor(size / 2.0f), floor(size / 2.0f)}, (Rotation){0, 45});
 }
 
 void drawCall(Screen screen, Camera camera)
