@@ -1,9 +1,11 @@
 #ifndef RAYCAST_H
 #define RAYCAST_H
 
-#include <types.h>
+#include <graphics/camera.h>
+#include <graphics/screen.h>
 #include <stdbool.h>
+#include <types.h>
 
-bool rayIntersectsAABB(Vector3 rayOrigin, Vector3 rayDir, AABB box, float *t);
+float raycastCall(AABB *aabbs, int aabbCount, Camera camera, Screen screen, int pixelRow, int pixelCol);
 
 #endif // RAYCAST_H

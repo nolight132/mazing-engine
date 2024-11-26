@@ -4,8 +4,6 @@
 #include <ncurses.h>
 #include <stdio.h>
 
-extern const int size;
-
 void initDraw()
 {
     // Initialize ncurses
@@ -18,16 +16,25 @@ void initDraw()
     nodelay(stdscr, TRUE); // Make getch non-blocking
 }
 
-void drawCall(Screen screen, Camera camera)
+char getGradientChar(float distance)
+{
+    const char *gradient = "@%#*+=-:. "; // Darkest to lightest
+    const int gradientLength = 9;        // Number of gradient levels
+    const int maxDistance = 5;           // Maximum distance to render
+
+    int index = (int)((1.0f - (distance / maxDistance)) * gradientLength);
+    return gradient[index < 0 ? 0 : index > gradientLength ? gradientLength : index];
+}
+
+void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount)
 {
     // Draw logic
     for (int y = 6; y < screen.height; y++)
     {
         for (int x = 0; x < screen.width; x++)
         {
-            // char c = getGradientChar(screen, x, y);
-            // mvaddch(y, x, c);
-            mvaddch(y, x, ':');
+            char c = getGradientChar(raycastCall(aabbs, aabbCount, camera, screen, y, x));
+            mvaddch(y, x, c);
         }
     }
     mvprintw(0, 0, "Press 'q' to quit.");

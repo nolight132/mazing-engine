@@ -4,14 +4,14 @@
 #include <graphics/screen.h>
 #include <main.h>
 #include <map/map.h>
-#include <math.h>
 #include <memory/memoryManagement.h>
 #include <ncurses.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
-const int size = 33;
+const int size = 10;
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 240);
-    initCamera(&camera, 60, (Vector3){1, floor(size / 2.0f), floor(size / 2.0f)}, (Rotation){0, 45});
+    initCamera(&camera, 60, (Vector3){1, 10.0f, 7.5f}, (Vector3){0, 0, 1});
 
     double frameDuration = 1e9 / screen.fps;
     long long frameTime = 0;
@@ -38,7 +38,7 @@ int main()
         struct timespec start, end;
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
-        deltaUpdate(&screen, &camera, frameTime);
+        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
@@ -62,6 +62,7 @@ int main()
 
     // Debug print
     debugPrintAABB(aabbs, aabbCount);
+    printMap(maze, size);
 
     // Free memory
     free2DArray(maze, size);
@@ -73,9 +74,9 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
 {
-    drawCall(*screen, *camera);
+    drawCall(*screen, *camera, aabbs, aabbCount);
 }
 #pragma GCC diagnostic pop
 
