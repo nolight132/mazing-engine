@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Iinclude -Wall -Wextra -g
 SRCDIR = src
 BINDIR = bin
-SOURCES = $(wildcard $(SRCDIR)/**/*.c) $(SRCDIR)/*.c
+SOURCES = $(shell find $(SRCDIR) -name '*.c')
 LDFLAGS = -lncurses
 FRAMEWORKS = 
 OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(BINDIR)/%.o)
