@@ -7,6 +7,9 @@ project(mazing-engine VERSION 1.0 LANGUAGES C)
 # Define where to place compiled binaries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Generate compile_commands.json for clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Enable all warnings and debugging
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g")
 
