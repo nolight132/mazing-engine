@@ -4,6 +4,13 @@
 #include <stdbool.h>
 #include <types.h>
 
+// Function to normalize a Vector3
+Vector3 normalize(Vector3 v)
+{
+    float length = sqrtf(v.y * v.y + v.x * v.x + v.z * v.z);
+    return (Vector3){v.y / length, v.x / length, v.z / length};
+}
+
 float raycast(Ray ray, AABB box)
 {
     float t1 = (box.min.x - ray.origin.x) / ray.direction.x;
@@ -33,13 +40,6 @@ float raycast(Ray ray, AABB box)
         return tmax;
     }
     return tmin;
-}
-
-// Function to normalize a Vector3
-Vector3 normalize(Vector3 v)
-{
-    float length = sqrtf(v.y * v.y + v.x * v.x + v.z * v.z);
-    return (Vector3){v.y / length, v.x / length, v.z / length};
 }
 
 // Function to compute a ray from the camera
