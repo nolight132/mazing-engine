@@ -20,8 +20,8 @@ float raycast(Ray ray, AABB box)
     float t5 = (box.min.z - ray.origin.z) / ray.direction.z;
     float t6 = (box.max.z - ray.origin.z) / ray.direction.z;
 
-    float tmin = fmax(fmax(fmin(t1, t2), fmin(t3, t4)), fmin(t5, t6));
-    float tmax = fmin(fmin(fmax(t1, t2), fmax(t3, t4)), fmax(t5, t6));
+    float tmin = fmaxf(fmaxf(fminf(t1, t2), fminf(t3, t4)), fminf(t5, t6));
+    float tmax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
 
     // if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
     if (tmax < 0)
@@ -46,7 +46,7 @@ float raycast(Ray ray, AABB box)
 Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
     // Compute the aspect ratio and FOV scaling factors
-    float fovY = 3;
+    float fovY = (float)camera.fov * (M_PI / 180.0f);
     float aspectRatio = (float)screen.width / (float)screen.height;
     float tanHalfFovY = tanf(fovY * 0.5f);
     Vector3 cameraUp = (Vector3){1, 0, 0};
@@ -60,7 +60,7 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
                                      right.x * camera.direction.y - right.y * camera.direction.x});
 
     // Map pixel coordinates to normalized screen space (-1 to 1)
-    float pixelNdcY = (2.0f * (pixelRow + 0.5f) / screen.height - 1.0f) * tanHalfFovY;
+    float pixelNdcY = (2.0f * (pixelRow + 0.5f) / screen.height - 1.0f) * tanHalfFovY * aspectRatio;
     float pixelNdcX = (2.0f * (pixelCol + 0.5f) / screen.width - 1.0f) * tanHalfFovY * aspectRatio;
 
     // Compute the direction in world space
@@ -75,14 +75,26 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
 
 float raycastCall(AABB *aabbs, int aabbCount, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
+    float tmin = INFINITY;
+    Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
+    float t;
     for (int i = 0; i < aabbCount; i++)
     {
-        Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
-        float t = raycast(ray, aabbs[i]);
-        if (t >= 0)
+        // if (powf(camera.position.x - aabbs[i].min.x, 2) + powf(camera.position.y - aabbs[i].min.y, 2) +
+        //         powf(camera.position.z - aabbs[i].min.z, 2) <=
+        //     36)
+        // {
+        //     float t = raycast(ray, aabbs[i]);
+        //     if (t <= tmin && t >= 0)
+        //     {
+        //         tmin = t;
+        //     }
+        // }
+        t = raycast(ray, aabbs[i]);
+        if (t <= tmin && t >= 0)
         {
-            return t;
+            tmin = t;
         }
     }
-    return -1;
+    return tmin == INFINITY ? -1 : tmin;
 }
