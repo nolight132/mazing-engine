@@ -64,9 +64,9 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     float pixelNdcX = (2.0f * (pixelCol + 0.5f) / screen.width - 1.0f) * tanHalfFovY * aspectRatio;
 
     // Compute the direction in world space
-    Vector3 pixelWorldDir = normalize((Vector3){camera.direction.y + pixelNdcY * up.y + pixelNdcX * right.y,
-                                                camera.direction.x + pixelNdcY * up.x + pixelNdcX * right.x,
-                                                camera.direction.z + pixelNdcY * up.z + pixelNdcX * right.z});
+    Vector3 pixelWorldDir = normalize((Vector3){camera.direction.y + pixelNdcY * up.y - pixelNdcX * right.y,
+                                                camera.direction.x + pixelNdcY * up.x - pixelNdcX * right.x,
+                                                camera.direction.z + pixelNdcY * up.z - pixelNdcX * right.z});
 
     // Create the ray
     Ray ray = {camera.position, pixelWorldDir};
