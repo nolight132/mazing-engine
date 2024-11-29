@@ -80,16 +80,6 @@ float raycastCall(AABB *aabbs, int aabbCount, Camera camera, Screen screen, int 
     float t;
     for (int i = 0; i < aabbCount; i++)
     {
-        // if (powf(camera.position.x - aabbs[i].min.x, 2) + powf(camera.position.y - aabbs[i].min.y, 2) +
-        //         powf(camera.position.z - aabbs[i].min.z, 2) <=
-        //     36)
-        // {
-        //     float t = raycast(ray, aabbs[i]);
-        //     if (t <= tmin && t >= 0)
-        //     {
-        //         tmin = t;
-        //     }
-        // }
         t = raycast(ray, aabbs[i]);
         if (t <= tmin && t >= 0)
         {

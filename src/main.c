@@ -1,3 +1,4 @@
+#include "types.h"
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
@@ -11,7 +12,7 @@
 #include <time.h>
 #include <unistd.h>
 
-const int size = 33;
+const int size = 17;
 
 int main()
 {
@@ -77,6 +78,28 @@ int main()
 void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
+    // TODO: Implement input handling
+    char input = getch();
+    if (input == 'w')
+    {
+        camera->position.z += 0.2f;
+    }
+    else if (input == 's')
+    {
+        camera->position.z -= 0.2f;
+    }
+    else if (input == 'a')
+    {
+        camera->position.x += 0.2f;
+    }
+    else if (input == 'd')
+    {
+        camera->position.x -= 0.2f;
+    }
+    else if (input == 'q')
+    {
+        exit(0);
+    }
 }
 #pragma GCC diagnostic pop
 
