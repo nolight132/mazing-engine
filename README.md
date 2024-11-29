@@ -9,11 +9,11 @@ It will generate random mazes and render them in a first-person perspective usin
     -   [x] Implement random maze generation
 -   [x] **Frame Rate Control**
     -   [x] Implement FPS control for smooth rendering
--   [ ] **Raycasting for 3D-like Rendering**
+-   [x] **Raycasting for 3D-like Rendering**
     -   [x] Implement raycasting algorithm
-    -   [ ] Implement wall rendering
+    -   [x] Implement wall rendering
 -   [ ] **Camera Movement**
     -   [ ] Add controls for moving the camera in the maze
-    -   [ ] Implement first-person perspective
+    -   [x] Implement first-person perspective
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
