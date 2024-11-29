@@ -1,11 +1,11 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <types.h>
 
 AABB *generateAABBs(int **maze, int size, int *aabbCount)
 {
-    AABB *aabbs = NULL;
-    *aabbCount = 0;
+    AABB *aabbs = (AABB *)malloc(sizeof(AABB));
+    aabbs[0] = (AABB){(Vector3){-2.5f, -2.0f, -2.0f}, (Vector3){-2.5f, size + 2.0f, size + 2.0f}}; // Floor
+    *aabbCount = 1;
     for (int z = 0; z < size; z++)
     {
         for (int x = 0; x < size; x++)
