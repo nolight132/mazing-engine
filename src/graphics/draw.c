@@ -1,6 +1,7 @@
 #include <graphics/camera.h>
 #include <graphics/raycast.h>
 #include <graphics/screen.h>
+#include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
 
@@ -8,6 +9,7 @@ void initDraw()
 {
     // Initialize ncurses
     printf("Initializing ncurses...\n");
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();              // Disable line buffering
     noecho();              // Disable echoing of typed characters
@@ -18,12 +20,12 @@ void initDraw()
 
 char getGradientChar(float distance)
 {
-    const char *gradient = "@%&#*+=~-,. ";
+    const char *gradient = "@#&%*+=~-,. ";
     const int gradientLength = 12; // Number of gradient levels
     const int maxDistance = 5;     // Maximum distance to render
 
     int index = (int)((distance / maxDistance) * gradientLength);
-    return gradient[index >= gradientLength ? gradientLength - 1 : index];
+    return gradient[index < 0 ? gradientLength - 1 : index >= gradientLength ? gradientLength - 2: index];
 }
 
 void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount)

@@ -27,7 +27,7 @@ int main()
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 240);
-    initCamera(&camera, 40, (Vector3){1.0f, 2.5f, 2.5f}, (Vector3){0, 0, 1});
+    initCamera(&camera, 60, (Vector3){1.0f, 2.5f, 2.5f}, (Vector3){0, 0, 1});
 
     double frameDuration = 1e9 / screen.fps;
     long long frameTime = 0;
@@ -55,8 +55,8 @@ int main()
         int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
         float frameTimeF = (float)frameTime / 1e6;
         mvprintw(1, 0, "Res: %dx%d\n", screen.width, screen.height);
-        mvprintw(4, 0, "frameTime: %.2f ms\n", frameTimeF);
-        mvprintw(5, 0, "%d FPS", currentFps);
+        mvprintw(4, 0, "Y/X/Z: %.2f,%.2f,%.2f", camera.position.y, camera.position.x, camera.position.z);
+        mvprintw(5, 0, "frameTime: %.2f ms, %d FPS", frameTimeF, currentFps);
         refresh();
     }
     endwin();
@@ -79,24 +79,25 @@ void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, dou
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
     // TODO: Implement input handling
+
     char input = getch();
     if (input == 'w')
     {
-        camera->position.z += 0.2f;
+        camera->position.z += 0.1f;
     }
-    else if (input == 's')
+    if (input == 's')
     {
-        camera->position.z -= 0.2f;
+        camera->position.z -= 0.1f;
     }
-    else if (input == 'a')
+    if (input == 'a')
     {
-        camera->position.x += 0.2f;
+        camera->position.x += 0.1f;
     }
-    else if (input == 'd')
+    if (input == 'd')
     {
-        camera->position.x -= 0.2f;
+        camera->position.x -= 0.1f;
     }
-    else if (input == 'q')
+    if (input == 'q')
     {
         exit(0);
     }
