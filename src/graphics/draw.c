@@ -20,7 +20,7 @@ void initDraw()
 
 char getGradientChar(float distance)
 {
-    const char *gradient = "@#&%*+=~-,. ";
+    const char *gradient = "#@&%*+=~-,. ";
     const int gradientLength = 12; // Number of gradient levels
     const int maxDistance = 5;     // Maximum distance to render
 
