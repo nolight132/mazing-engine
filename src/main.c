@@ -3,6 +3,7 @@
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
 #include <graphics/screen.h>
+#include <graphics/vector.h>
 #include <main.h>
 #include <map/map.h>
 #include <memory/memoryManagement.h>
@@ -79,7 +80,13 @@ int main()
 void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
-    camera->position.z += 10.0f * deltaTime;
+    camera->position.z += 2.0f * deltaTime;
+    Vector3 dir = normalizeVector3((Vector3){
+        camera->direction.y,
+        camera->direction.x - 2.0f * deltaTime,
+        camera->direction.z,
+    });
+    camera->direction = dir;
     // TODO: Implement input handling
 }
 #pragma GCC diagnostic pop
