@@ -39,7 +39,8 @@ int main()
         struct timespec start, end;
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
-        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime);
+        // Divide by 1e9 to convert nanoseconds to seconds
+        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime / 1e9);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
