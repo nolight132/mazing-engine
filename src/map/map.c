@@ -104,14 +104,26 @@ Vector2 getRandDir(Vector2 dirs[], int count)
 }
 void printMap(int **map, int size)
 {
+    for (int x = 0; x < size + 2; x++)
+    {
+        printTile(BORDER);
+    }
+    printf("\n");
     for (int y = 0; y < size; y++)
     {
+        printTile(BORDER);
         for (int x = 0; x < size; x++)
         {
             printTile(map[y][x]);
         }
+        printTile(BORDER);
         printf("\n");
     }
+    for (int x = 0; x < size + 2; x++)
+    {
+        printTile(BORDER);
+    }
+    printf("\n");
 }
 void printTile(int type)
 {
