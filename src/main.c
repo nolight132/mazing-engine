@@ -19,9 +19,9 @@ int main()
     srand(time(NULL));
 
     int aabbCount = 0;
-    AABB *aabbs = NULL;
+    AABB **aabbs = NULL;
     int **maze = generateMaze(size);
-    initGeometry(&aabbs, &aabbCount, maze, size);
+    initGeometry(&*aabbs, &aabbCount, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
@@ -76,9 +76,9 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int aabbCount, double deltaTime)
 {
-    drawCall(*screen, *camera, aabbs, aabbCount);
+    // drawCall(*screen, *camera, aabbs, aabbCount);
     camera->position.z += 10.0f * deltaTime;
     // TODO: Implement input handling
 }
@@ -89,12 +89,16 @@ bool gameRunning()
     return getch() != 'q';
 }
 
-void debugPrintAABB(AABB *aabbs, int aabbCount)
+void debugPrintAABB(AABB **aabbs, int aabbCount)
 {
     printf("Geometry data:\n");
     for (int i = 0; i < aabbCount; i++)
     {
-        printf("AABB %d: (%f, %f, %f) - (%f, %f, %f)\n", i + 1, aabbs[i].min.x, aabbs[i].min.y, aabbs[i].min.z,
-               aabbs[i].max.x, aabbs[i].max.y, aabbs[i].max.z);
+        printf("Chunk %d:\n", i);
+        for (int j = 0; j < aabbCount; j++)
+        {
+            printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j, aabbs[i][j].min.x, aabbs[i][j].min.y,
+                   aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
+        }
     }
 }
