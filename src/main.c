@@ -79,28 +79,6 @@ void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, dou
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
     // TODO: Implement input handling
-
-    char input = getch();
-    if (input == 'w')
-    {
-        camera->position.z += 0.1f;
-    }
-    if (input == 's')
-    {
-        camera->position.z -= 0.1f;
-    }
-    if (input == 'a')
-    {
-        camera->position.x += 0.1f;
-    }
-    if (input == 'd')
-    {
-        camera->position.x -= 0.1f;
-    }
-    if (input == 'q')
-    {
-        exit(0);
-    }
 }
 #pragma GCC diagnostic pop
 
