@@ -1,6 +1,7 @@
 #include <stdlib.h>
+#include <types.h>
 
-void free2DArray(int **array, int rows)
+void free2DArray(void **array, int rows)
 {
     for (int i = 0; i < rows; i++)
     {

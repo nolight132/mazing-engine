@@ -67,7 +67,7 @@ int main()
     printMap(maze, size);
 
     // Free memory
-    free2DArray(maze, size);
+    free2DArray((void **)maze, size);
     free(aabbs);
 
     return 0;
