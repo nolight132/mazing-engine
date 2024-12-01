@@ -4,6 +4,7 @@
 #include <graphics/geometryBuffer.h>
 #include <graphics/screen.h>
 #include <graphics/vector.h>
+#include <input/input.h>
 #include <main.h>
 #include <map/map.h>
 #include <memory/memoryManagement.h>
@@ -35,10 +36,11 @@ int main()
     long long sleepTime = 0;
 
     MEVENT lastMouseEvent;
+    char ch;
     getmouse(&lastMouseEvent);
     MEVENT currentMouseEvent = lastMouseEvent;
 
-    while (gameRunning())
+    while ((ch = getch()) != 'q')
     { // Quit on 'q'
         clear();
         getmouse(&currentMouseEvent);
@@ -50,7 +52,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, aabbs, aabbCount, mouseDelta, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, aabbs, aabbCount, ch, mouseDelta, frameTime / 1e9f);
         lastMouseEvent = currentMouseEvent;
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
@@ -87,18 +89,13 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, Vector2 mouseDelta, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, char input, Vector2 mouseDelta,
+                 double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
-    // camera->position.z += 2.0f * deltaTime;
-    // TODO: Implement input handling
+    handleInput(input, camera, deltaTime);
 }
 #pragma GCC diagnostic pop
-
-bool gameRunning()
-{
-    return getch() != 'q';
-}
 
 void debugPrintAABB(AABB *aabbs, int aabbCount)
 {
