@@ -21,11 +21,14 @@ void initDraw()
 char getGradientChar(float distance)
 {
     const char *gradient = "#@&%*+=~-,. ";
-    const int gradientLength = 12; // Number of gradient levels
+    const int gradientLength = 11; // Number of gradient levels
     const int maxDistance = 5;     // Maximum distance to render
 
     int index = (int)((distance / maxDistance) * gradientLength);
-    return gradient[index < 0 ? gradientLength - 1 : index >= gradientLength ? gradientLength - 2 : index];
+    return gradient[index < 0                 ? gradientLength
+                    : index >= gradientLength ? gradientLength - 1
+                    : index == gradientLength ? gradientLength - 1
+                                              : index];
 }
 
 void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount)
