@@ -7,7 +7,7 @@
 #include <time.h>
 #include <types.h>
 
-void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime);
+void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, Vector2 mouseDelta, double deltaTime);
 bool gameRunning();
 // Function to calculate the time difference (delta time) in seconds between two times
 double calculateDeltaTime(struct timespec start, struct timespec end);

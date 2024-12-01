@@ -28,20 +28,30 @@ int main()
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, 50, (Vector3){1.0f, 1.5f, 1.5f}, (Vector3){0, 0, 1});
+    initCamera(&camera, 50, (Vector3){1.0f, 1.5f, 1.5f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = 0;
     long long sleepTime = 0;
 
+    MEVENT lastMouseEvent;
+    getmouse(&lastMouseEvent);
+    MEVENT currentMouseEvent = lastMouseEvent;
+
     while (gameRunning())
     { // Quit on 'q'
         clear();
+        getmouse(&currentMouseEvent);
+        Vector2 mouseDelta = (Vector2){
+            (float)(currentMouseEvent.x - lastMouseEvent.x),
+            (float)(currentMouseEvent.y - lastMouseEvent.y),
+        };
         struct timespec start, end;
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, aabbs, aabbCount, mouseDelta, frameTime / 1e9f);
+        lastMouseEvent = currentMouseEvent;
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
@@ -77,16 +87,10 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, Vector2 mouseDelta, double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
-    camera->position.z += 2.0f * deltaTime;
-    Vector3 dir = normalizeVector3((Vector3){
-        camera->direction.y,
-        camera->direction.x - 2.0f * deltaTime,
-        camera->direction.z,
-    });
-    camera->direction = dir;
+    // camera->position.z += 2.0f * deltaTime;
     // TODO: Implement input handling
 }
 #pragma GCC diagnostic pop
