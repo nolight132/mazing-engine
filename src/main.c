@@ -1,4 +1,3 @@
-#include "types.h"
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
@@ -12,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <types.h>
 #include <unistd.h>
 
 const int size = 15;
