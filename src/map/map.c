@@ -13,11 +13,6 @@ int **generateMaze(int d)
     {
         map[y] = (int *)malloc(d * sizeof(int));
     }
-    // Add walls around the map
-    for (int i = 0; i < d; i++)
-    {
-        map[0][i] = map[i][0] = map[d - 1][i] = map[i][d - 1] = BORDER;
-    }
     generatePath(map, d);
     return map;
 }

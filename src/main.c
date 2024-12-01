@@ -12,7 +12,7 @@
 #include <time.h>
 #include <unistd.h>
 
-const int size = 17;
+const int size = 15;
 
 int main()
 {
@@ -27,7 +27,7 @@ int main()
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, 50, (Vector3){1.0f, 2.5f, 2.5f}, (Vector3){0, 0, 1});
+    initCamera(&camera, 50, (Vector3){1.0f, 1.5f, 1.5f}, (Vector3){0, 0, 1});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = 0;
