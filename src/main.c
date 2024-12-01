@@ -26,10 +26,10 @@ int main()
     Screen screen = {0};
     Camera camera = {0};
     initDraw();
-    initScreen(&screen, COLS, LINES, 240);
-    initCamera(&camera, 60, (Vector3){1.0f, 2.5f, 2.5f}, (Vector3){0, 0, 1});
+    initScreen(&screen, COLS, LINES, 60);
+    initCamera(&camera, 50, (Vector3){1.0f, 2.5f, 2.5f}, (Vector3){0, 0, 1});
 
-    double frameDuration = 1e9 / screen.fps;
+    double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = 0;
     long long sleepTime = 0;
 
@@ -40,7 +40,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime / 1e9);
+        deltaUpdate(&screen, &camera, aabbs, aabbCount, frameTime / 1e9f);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
@@ -79,6 +79,7 @@ int main()
 void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
+    camera->position.z += 10.0f * deltaTime;
     // TODO: Implement input handling
 }
 #pragma GCC diagnostic pop

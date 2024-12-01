@@ -25,7 +25,7 @@ char getGradientChar(float distance)
     const int maxDistance = 5;     // Maximum distance to render
 
     int index = (int)((distance / maxDistance) * gradientLength);
-    return gradient[index < 0 ? gradientLength - 1 : index >= gradientLength ? gradientLength - 2: index];
+    return gradient[index < 0 ? gradientLength - 1 : index >= gradientLength ? gradientLength - 2 : index];
 }
 
 void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount)

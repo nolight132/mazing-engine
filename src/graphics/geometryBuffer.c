@@ -15,7 +15,8 @@ AABB *generateAABBs(int **maze, int size, int *aabbCount)
                 AABB candidate;
                 candidate.min = (Vector3){0, x, z};
                 candidate.max = (Vector3){2, (x + 1), (z + 1)};
-                if (aabbs[*aabbCount - 1].min.z == candidate.min.z && maze[(int)candidate.min.z][(int)candidate.min.x - 1] == WALL)
+                if (aabbs[*aabbCount - 1].min.z == candidate.min.z &&
+                    maze[(int)candidate.min.z][(int)candidate.min.x - 1] == WALL)
                 { // Merge AABBs horizontally
                     aabbs[*aabbCount - 1].max = candidate.max;
                 }
