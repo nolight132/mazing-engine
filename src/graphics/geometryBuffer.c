@@ -4,8 +4,6 @@
 AABB *generateAABBs(int **maze, int size, int *aabbCount)
 {
     AABB *aabbs = (AABB *)malloc(sizeof(AABB));
-    aabbs[0] = (AABB){(Vector3){-2.5f, -2.0f, -2.0f}, (Vector3){-2.5f, size + 2.0f, size + 2.0f}}; // Floor
-    *aabbCount = 1;
     for (int z = 0; z < size; z++)
     {
         for (int x = 0; x < size; x++)
@@ -15,7 +13,7 @@ AABB *generateAABBs(int **maze, int size, int *aabbCount)
                 AABB candidate;
                 candidate.min = (Vector3){0, x, z};
                 candidate.max = (Vector3){2, (x + 1), (z + 1)};
-                if (aabbs[*aabbCount - 1].min.z == candidate.min.z &&
+                if (*aabbCount > 0 && aabbs[*aabbCount - 1].min.z == candidate.min.z &&
                     maze[(int)candidate.min.z][(int)candidate.min.x - 1] == WALL)
                 { // Merge AABBs horizontally
                     aabbs[*aabbCount - 1].max = candidate.max;
