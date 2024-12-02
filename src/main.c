@@ -104,7 +104,7 @@ bool gameRunning()
     return getch() != 'q';
 }
 
-void debugPrintAABB(AABB *aabbs, int aabbCount)
+void debugPrintAABB(AABB **aabbs, int aabbCount)
 {
     printf("Geometry data:\n");
     for (int i = 0; i < aabbCount; i++)
