@@ -1,8 +1,6 @@
 #include <math.h>
 #include <types.h>
 
-#define normalize(v) _Generic((v), Vector2: normalizeVector2, Vector3: normalizeVector3)(v);
-
 Vector2 normalizeVector2(Vector2 v)
 {
     float length = sqrtf(v.y * v.y + v.x * v.x);
@@ -27,4 +25,49 @@ Vector3 calculateDirection(Rotation rotation)
     float z = cosf(pitchRad) * cosf(yawRad);
 
     return (Vector3){y, x, z};
+}
+
+Vector2 addVector2(Vector2 a, Vector2 b)
+{
+    return (Vector2){a.y + b.y, a.x + b.x};
+}
+
+Vector3 addVector3(Vector3 a, Vector3 b)
+{
+    return (Vector3){a.y + b.y, a.x + b.x, a.z + b.z};
+}
+
+Vector2 subtractVector2(Vector2 a, Vector2 b)
+{
+    return (Vector2){a.y - b.y, a.x - b.x};
+}
+
+Vector3 subtractVector3(Vector3 a, Vector3 b)
+{
+    return (Vector3){a.y - b.y, a.x - b.x, a.z - b.z};
+}
+
+Vector2 multiplyVector2(Vector2 a, Vector2 b)
+{
+    return (Vector2){a.y * b.y, a.x * b.x};
+}
+
+Vector3 multiplyVector3(Vector3 a, Vector3 b)
+{
+    return (Vector3){a.y * b.y, a.x * b.x, a.z * b.z};
+}
+
+Vector2 multiplyVector2ByFloat(Vector2 v, float scalar)
+{
+    return (Vector2){v.y * scalar, v.x * scalar};
+}
+
+Vector3 multiplyVector3ByFloat(Vector3 v, float scalar)
+{
+    return (Vector3){v.y * scalar, v.x * scalar, v.z * scalar};
+}
+
+Vector3 crossProduct(Vector3 a, Vector3 b)
+{
+    return (Vector3){a.x * b.z - a.z * b.x, a.z * b.y - a.y * b.z, a.y * b.x - a.x * b.y};
 }
