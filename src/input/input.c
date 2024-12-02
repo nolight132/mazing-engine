@@ -1,24 +1,21 @@
 #include <graphics/camera.h>
 #include <graphics/vector.h>
-#include <math.h>
 #include <ncurses.h>
 #include <types.h>
 
 Vector3 acceleration = {0, 0, 0};
-float speed = 0.005f;
+float speed = 0.02f;
 float maxSpeed = 0.01f;
-float drag = 0.05f;
+float drag = 0.1f;
 
-void applyDrag(Vector3 *acceleration, float drag, float deltaTime)
+void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 {
-    if (acceleration->y != 0)
-        acceleration->y -= (acceleration->y > 0 ? drag : -drag) * deltaTime;
-
-    if (acceleration->x != 0)
-        acceleration->x -= (acceleration->x > 0 ? drag : -drag) * deltaTime;
-
-    if (acceleration->z != 0)
-        acceleration->z -= (acceleration->z > 0 ? drag : -drag) * deltaTime;
+    float vLength = vectorLength(*acceleration);
+    if (vLength > 0.0f)
+    {
+        Vector3 dragVector = multiplyVectorByFloat(*acceleration, -drag);
+        *acceleration = addVector3(*acceleration, dragVector);
+    }
 }
 
 void handleInput(int input, Camera *camera, double deltaTime)
@@ -52,19 +49,13 @@ void handleInput(int input, Camera *camera, double deltaTime)
                     acceleration = subtractVector(acceleration, multiplyVectorByFloat(right, speed));
                 break;
             case KEY_LEFT:
-                camera->rotation.yaw += 10.0f * deltaTime;
+                camera->rotation.yaw += 0.785f;
                 break;
             case KEY_RIGHT:
-                camera->rotation.yaw -= 10.0f * deltaTime;
-                break;
-            case KEY_UP:
-                camera->rotation.pitch += 10.0f * deltaTime;
-                break;
-            case KEY_DOWN:
-                camera->rotation.pitch -= 10.0f * deltaTime;
+                camera->rotation.yaw -= 0.785f;
                 break;
         }
     }
     camera->position = addVector3(camera->position, acceleration);
-    applyDrag(&acceleration, drag, deltaTime);
+    applyMovementDrag(&acceleration, drag, deltaTime);
 }
