@@ -93,6 +93,7 @@ void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, cha
                  double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
+    camera->rotation.yaw += 0.01f;
     handleInput(input, camera, deltaTime);
 }
 #pragma GCC diagnostic pop
