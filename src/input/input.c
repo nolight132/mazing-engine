@@ -6,7 +6,7 @@
 
 Vector3 acceleration = {0, 0, 0};
 float speed = 0.005f;
-float maxAcceleration = 0.01f;
+float maxSpeed = 0.01f;
 float drag = 0.05f;
 
 void applyDrag(Vector3 *acceleration, float drag, float deltaTime)
@@ -21,7 +21,7 @@ void applyDrag(Vector3 *acceleration, float drag, float deltaTime)
         acceleration->z -= (acceleration->z > 0 ? drag : -drag) * deltaTime;
 }
 
-void handleInput(char input, Camera *camera, double deltaTime)
+void handleInput(int input, Camera *camera, double deltaTime)
 {
     Vector3 cameraDirection = calculateDirection(camera->rotation);
     Vector3 up = (Vector3){1, 0, 0};
@@ -32,23 +32,36 @@ void handleInput(char input, Camera *camera, double deltaTime)
 
     if (input != ERR)
     {
+        float vLength = vectorLength(acceleration);
         switch (input)
         {
             case 'w': // Move forward
-                if (fabs(acceleration.y) < maxAcceleration)
+                if (vLength < maxSpeed)
                     acceleration = addVector(acceleration, multiplyVectorByFloat(cameraDirection, speed));
                 break;
             case 'a': // Strafe left
-                if (fabs(acceleration.x) < maxAcceleration)
-                    acceleration = subtractVector(acceleration, multiplyVectorByFloat(right, speed));
+                if (vLength < maxSpeed)
+                    acceleration = addVector(acceleration, multiplyVectorByFloat(right, speed));
                 break;
             case 's': // Move backward
-                if (fabs(acceleration.y) < maxAcceleration)
+                if (vLength < maxSpeed)
                     acceleration = subtractVector(acceleration, multiplyVectorByFloat(cameraDirection, speed));
                 break;
             case 'd': // Strafe right
-                if (fabs(acceleration.x) < maxAcceleration)
-                    acceleration = addVector(acceleration, multiplyVectorByFloat(right, speed));
+                if (vLength < maxSpeed)
+                    acceleration = subtractVector(acceleration, multiplyVectorByFloat(right, speed));
+                break;
+            case KEY_LEFT:
+                camera->rotation.yaw += 10.0f * deltaTime;
+                break;
+            case KEY_RIGHT:
+                camera->rotation.yaw -= 10.0f * deltaTime;
+                break;
+            case KEY_UP:
+                camera->rotation.pitch += 10.0f * deltaTime;
+                break;
+            case KEY_DOWN:
+                camera->rotation.pitch -= 10.0f * deltaTime;
                 break;
         }
     }

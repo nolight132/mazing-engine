@@ -36,7 +36,7 @@ int main()
     long long sleepTime = 0;
 
     MEVENT lastMouseEvent;
-    char ch;
+    int ch;
     getmouse(&lastMouseEvent);
     MEVENT currentMouseEvent = lastMouseEvent;
 
@@ -69,7 +69,8 @@ int main()
         int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
         float frameTimeF = (float)frameTime / 1e6;
         mvprintw(1, 0, "Res: %dx%d\n", screen.width, screen.height);
-        mvprintw(4, 0, "Y/X/Z: %.2f,%.2f,%.2f", camera.position.y, camera.position.x, camera.position.z);
+        mvprintw(4, 0, "Y/X/Z: %.2f, %.2f, %.2f. Yaw/Pitch: %.2f, %.2f", camera.position.y, camera.position.x,
+                 camera.position.z, camera.rotation.yaw, camera.rotation.pitch);
         mvprintw(5, 0, "frameTime: %.2f ms, %d FPS", frameTimeF, currentFps);
         refresh();
     }
@@ -89,11 +90,11 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, char input, Vector2 mouseDelta,
+void deltaUpdate(Screen *screen, Camera *camera, AABB *aabbs, int aabbCount, int input, Vector2 mouseDelta,
                  double deltaTime)
 {
     drawCall(*screen, *camera, aabbs, aabbCount);
-    camera->rotation.yaw += 0.01f;
+    // camera->rotation.pitch += 2.0f * deltaTime;
     handleInput(input, camera, deltaTime);
 }
 #pragma GCC diagnostic pop
