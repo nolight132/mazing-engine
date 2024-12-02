@@ -13,6 +13,16 @@ Vector3 normalizeVector3(Vector3 v)
     return (Vector3){v.y / length, v.x / length, v.z / length};
 }
 
+float vector3Length(Vector3 v)
+{
+    return sqrtf(v.y * v.y + v.x * v.x + v.z * v.z);
+}
+
+float vector2Length(Vector2 v)
+{
+    return sqrtf(v.y * v.y + v.x * v.x);
+}
+
 /*
  * Calculate the direction vector from a rotation
  * @param rotation Rotation in radians
