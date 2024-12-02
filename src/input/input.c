@@ -1,6 +1,5 @@
 #include <graphics/camera.h>
 #include <graphics/vector.h>
-#include <math.h>
 #include <ncurses.h>
 #include <types.h>
 
