@@ -40,20 +40,17 @@ float raycast(Ray ray, AABB box)
 Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
     // Compute the aspect ratio and FOV scaling factors
-    float fovY = (float)camera.fov * (M_PI / 180.0f);
+    Vector3 direction = calculateDirection(camera.rotation);
+    float fov = (float)camera.fov * (M_PI / 180.0f);
     float aspectRatio = (float)screen.width / (float)screen.height;
-    float tanHalfFovY = tanf(fovY * 0.5f);
-    Vector3 cameraUp = (Vector3){1, 0, 0};
+    float tanHalfFovY = tanf(fov * 0.5f);
 
     // Calculate the camera basis vectors
-    Vector3 right = (Vector3){cameraUp.z * camera.direction.x - cameraUp.x * camera.direction.z,
-                              cameraUp.y * camera.direction.z - cameraUp.z * camera.direction.y,
-                              cameraUp.x * camera.direction.y - cameraUp.y * camera.direction.x};
+    Vector3 right = (Vector3){0, cos(camera.rotation.yaw), -sin(camera.rotation.yaw)};
     right = normalize(right);
 
-    Vector3 up = (Vector3){right.z * camera.direction.x - right.x * camera.direction.z,
-                           right.y * camera.direction.z - right.z * camera.direction.y,
-                           right.x * camera.direction.y - right.y * camera.direction.x};
+    Vector3 up = (Vector3){cos(camera.rotation.pitch), sin(camera.rotation.pitch) * sin(camera.rotation.yaw),
+                           sin(camera.rotation.pitch) * cos(camera.rotation.yaw)};
     up = normalize(up);
 
     // Map pixel coordinates to normalized screen space (-1 to 1)
@@ -61,9 +58,8 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     float pixelNdcX = (2.0f * (pixelCol + 0.5f) / screen.width - 1.0f) * tanHalfFovY * aspectRatio;
 
     // Compute the direction in world space
-    Vector3 pixelWorldDir = (Vector3){camera.direction.y + pixelNdcY * up.y - pixelNdcX * right.y,
-                                      camera.direction.x + pixelNdcY * up.x - pixelNdcX * right.x,
-                                      camera.direction.z + pixelNdcY * up.z - pixelNdcX * right.z};
+    Vector3 pixelWorldDir =
+        addVector(direction, addVector(multiplyVectorByFloat(up, pixelNdcY), multiplyVectorByFloat(right, -pixelNdcX)));
     pixelWorldDir = normalize(pixelWorldDir);
 
     // Create the ray

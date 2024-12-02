@@ -21,7 +21,8 @@ typedef struct
     float z;
 } Vector3;
 
-typedef struct {
+typedef struct
+{
     Vector3 min; // Minimum corner of the box
     Vector3 max; // Maximum corner of the box
 } AABB;
@@ -34,8 +35,8 @@ typedef struct
 
 typedef struct
 {
-    double yaw; // Rotation around the y-axis
+    double yaw;   // Rotation around the y-axis
     double pitch; // Rotation around the x-axis
 } Rotation;
 
-#endif  // TYPES_H
+#endif // TYPES_H

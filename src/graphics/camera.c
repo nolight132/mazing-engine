@@ -7,12 +7,12 @@ typedef struct Camera
 {
     int fov;
     Vector3 position;
-    Vector3 direction;
+    Rotation rotation;
 
     // Function pointers
     void (*move)(struct Camera *, Vector3);
-    void (*rotate)(struct Camera *, Vector3);
-    void (*init)(struct Camera *, int, Vector3, Vector3);
+    void (*rotate)(struct Camera *, Rotation);
+    void (*init)(struct Camera *, int, Vector3, Rotation);
 } Camera;
 
 void cameraMove(Camera *camera, Vector3 position)
@@ -22,16 +22,16 @@ void cameraMove(Camera *camera, Vector3 position)
     camera->position.z += position.z;
 }
 
-void cameraRotate(Camera *camera, Vector3 direction)
+void cameraRotate(Camera *camera, Rotation rotation)
 {
-    camera->direction = direction;
+    camera->rotation = rotation;
 }
 
-void initCamera(Camera *camera, int fov, Vector3 position, Vector3 direction)
+void initCamera(Camera *camera, int fov, Vector3 position, Rotation rotation)
 {
     camera->fov = fov;
     camera->position = position;
-    camera->direction = direction;
+    camera->rotation = rotation;
     camera->move = cameraMove;
     camera->rotate = cameraRotate;
     camera->init = initCamera;
