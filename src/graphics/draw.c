@@ -1,3 +1,4 @@
+#include "types.h"
 #include <graphics/camera.h>
 #include <graphics/raycast.h>
 #include <graphics/screen.h>
@@ -35,7 +36,7 @@ char getGradientChar(float distance)
                                               : index];
 }
 
-void drawCall(Screen screen, Camera camera, AABB **aabbs)
+void drawCall(Screen screen, Camera camera, GeometryData geometry)
 {
     // Draw logic
 
@@ -43,7 +44,7 @@ void drawCall(Screen screen, Camera camera, AABB **aabbs)
     {
         for (int x = 0; x < screen.width; x++)
         {
-            char c = getGradientChar(raycastCall(aabbs, camera, screen, y, x));
+            char c = getGradientChar(raycastCall(geometry, camera, screen, y, x));
             mvaddch(y, x, c);
         }
     }

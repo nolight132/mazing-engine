@@ -5,8 +5,8 @@
 #include <types.h>
 
 Vector3 acceleration = {0, 0, 0};
-float speed = 0.02f;
-float maxSpeed = 0.01f;
+float speed = 0.05f;
+float maxSpeed = 0.05f;
 float drag = 50.0f;
 
 void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)

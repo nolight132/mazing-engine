@@ -67,26 +67,30 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     return ray;
 }
 
-float raycastCall(AABB **aabbs, Camera camera, Screen screen, int pixelRow, int pixelCol)
+float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
     float tmin = INFINITY;
     Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
     float t;
-    for (int i = 0; i < 64; i++)
+    // int currectChunk = 0;
+    // int chunkRow = sqrt(data.chunkCount);
+    // int *renderedChunks;
+    // if (currectChunk <= chunkRow ||
+    //     (currectChunk <= chunkRow * (chunkRow - 1) && currectChunk >= chunkRow * (chunkRow - 2)) ||
+    //     currectChunk % chunkRow == 0 || currectChunk % chunkRow == chunkRow - 1)
+    // {
+    //     renderedChunks = (int *)malloc(sizeof(int) * 5);
+    // }
+    for (int i = 0; i < data.chunkCount; i++)
     {
-        if (aabbs[0][i].min.x - 5 < camera.position.x)
+        for (int j = 0; j < data.chunkSizeData[i]; j++)
         {
-            t = raycast(ray, aabbs[0][i]);
+            t = raycast(ray, data.aabbs[i][j]);
             if (t <= tmin && t >= 0)
             {
                 tmin = t;
             }
         }
-        // t = raycast(ray, aabbs[i]);
-        // if (t <= tmin && t >= 0)
-        // {
-        //     tmin = t;
-        // }
     }
     return tmin == INFINITY ? -1 : tmin;
 }

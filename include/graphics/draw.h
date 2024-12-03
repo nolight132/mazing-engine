@@ -5,6 +5,6 @@
 #include <graphics/screen.h>
 
 void initDraw();
-void drawCall(Screen screen, Camera camera, AABB **aabbs);
+void drawCall(Screen screen, Camera camera, GeometryData geometry);
 
 #endif // DRAW_H

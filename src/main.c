@@ -21,18 +21,16 @@ int main()
     srand(time(NULL));
 
     int chunkSize = 8;
-    int *chunkSizeData = NULL;
-    int chunkCount;
-    AABB **aabbs = NULL;
     int **maze = generateMaze(size);
     printMap(maze, size);
-    initGeometry(&aabbs, chunkSize, &chunkSizeData, &chunkCount, maze, size);
+    GeometryData geometry = {0};
+    initGeometry(&geometry, chunkSize, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, 50, (Vector3){1.0f, 1.5f, 1.5f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, 50, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = 0;
@@ -55,7 +53,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, aabbs, ch, mouseDelta, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, geometry, ch, mouseDelta, frameTime / 1e9f);
         lastMouseEvent = currentMouseEvent;
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
@@ -80,12 +78,12 @@ int main()
     endwin();
 
     // Debug print
-    debugPrintAABB(aabbs, chunkCount, chunkSizeData);
+    debugPrintAABB(geometry.aabbs, geometry.chunkCount, geometry.chunkSizeData);
     printMap(maze, size);
 
     // Free memory
     free2DArray((void **)maze, size);
-    free(aabbs);
+    free(geometry.aabbs);
 
     return 0;
 }
@@ -93,9 +91,9 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int input, Vector2 mouseDelta, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int input, Vector2 mouseDelta, double deltaTime)
 {
-    drawCall(*screen, *camera, aabbs);
+    drawCall(*screen, *camera, geometry);
     // camera->rotation.pitch += 2.0f * deltaTime;
     handleInput(input, camera, deltaTime);
 }
