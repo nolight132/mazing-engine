@@ -11,6 +11,6 @@ void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int input, Vector
 bool gameRunning();
 // Function to calculate the time difference (delta time) in seconds between two times
 double calculateDeltaTime(struct timespec start, struct timespec end);
-void debugPrintAABB(AABB **aabbs, int chunkCount, int chunkSize);
+void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData);
 
 #endif // MAIN_H

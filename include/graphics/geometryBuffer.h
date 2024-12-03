@@ -3,6 +3,6 @@
 
 #include <types.h>
 
-void initGeometry(AABB ***aabbs, int chunkSize, int *chunkCount, int **maze, int size);
+void initGeometry(AABB ***aabbs, int chunkSize, int **chunkSizeData, int *chunkCount, int **maze, int size);
 
 #endif // GEOMETRYBUFFER_H

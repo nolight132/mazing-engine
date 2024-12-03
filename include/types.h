@@ -39,4 +39,10 @@ typedef struct
     double pitch; // Rotation around the x-axis
 } Rotation;
 
+typedef struct
+{
+    AABB **aabbs;
+    int *chunkSizeData;
+} GeometryData;
+
 #endif // TYPES_H

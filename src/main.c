@@ -14,17 +14,19 @@
 #include <types.h>
 #include <unistd.h>
 
-const int size = 64;
+const int size = 16;
 
 int main()
 {
     srand(time(NULL));
 
     int chunkSize = 8;
+    int *chunkSizeData = NULL;
     int chunkCount;
     AABB **aabbs = NULL;
     int **maze = generateMaze(size);
-    initGeometry(&aabbs, chunkSize, &chunkCount, maze, size);
+    printMap(maze, size);
+    initGeometry(&aabbs, chunkSize, &chunkSizeData, &chunkCount, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
@@ -78,7 +80,7 @@ int main()
     endwin();
 
     // Debug print
-    debugPrintAABB(aabbs, chunkCount, chunkSize);
+    debugPrintAABB(aabbs, chunkCount, chunkSizeData);
     printMap(maze, size);
 
     // Free memory
@@ -104,13 +106,13 @@ bool gameRunning()
     return getch() != 'q';
 }
 
-void debugPrintAABB(AABB **aabbs, int chunkCount, int chunkSize)
+void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
 {
     printf("Geometry data:\n");
     for (int i = 0; i < chunkCount; i++)
     {
-        printf("Chunk %d:\n", i + 1);
-        for (int j = 0; j < chunkSize * chunkSize; j++)
+        printf("Size: %d\nChunk %d:\n", chunkSizeData[i], i + 1);
+        for (int j = 0; j < chunkSizeData[i]; j++)
         {
             printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.y,
                    aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
