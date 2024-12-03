@@ -1,5 +1,6 @@
 #include <graphics/camera.h>
 #include <graphics/vector.h>
+#include <math.h>
 #include <ncurses.h>
 #include <types.h>
 
@@ -49,10 +50,10 @@ void handleInput(int input, Camera *camera, double deltaTime)
                     acceleration = subtractVector(acceleration, multiplyVectorByFloat(right, speed));
                 break;
             case KEY_LEFT:
-                camera->rotation.yaw += 0.785f;
+                camera->rotation.yaw += M_PI / 4;
                 break;
             case KEY_RIGHT:
-                camera->rotation.yaw -= 0.785f;
+                camera->rotation.yaw -= M_PI / 4;
                 break;
         }
     }
