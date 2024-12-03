@@ -35,14 +35,15 @@ char getGradientChar(float distance)
                                               : index];
 }
 
-void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount)
+void drawCall(Screen screen, Camera camera, AABB **aabbs)
 {
     // Draw logic
+
     for (int y = 6; y < screen.height; y++)
     {
         for (int x = 0; x < screen.width; x++)
         {
-            char c = getGradientChar(raycastCall(aabbs, aabbCount, camera, screen, y, x));
+            char c = getGradientChar(raycastCall(aabbs, camera, screen, y, x));
             mvaddch(y, x, c);
         }
     }

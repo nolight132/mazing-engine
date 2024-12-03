@@ -14,16 +14,17 @@
 #include <types.h>
 #include <unistd.h>
 
-const int size = 15;
+const int size = 64;
 
 int main()
 {
     srand(time(NULL));
 
-    int aabbCount = 0;
+    int chunkSize = 8;
+    int chunkCount;
     AABB **aabbs = NULL;
     int **maze = generateMaze(size);
-    initGeometry(&*aabbs, &aabbCount, maze, size);
+    initGeometry(&aabbs, chunkSize, &chunkCount, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
@@ -52,7 +53,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, aabbs, aabbCount, ch, mouseDelta, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, aabbs, ch, mouseDelta, frameTime / 1e9f);
         lastMouseEvent = currentMouseEvent;
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
@@ -77,7 +78,7 @@ int main()
     endwin();
 
     // Debug print
-    debugPrintAABB(aabbs, aabbCount);
+    debugPrintAABB(aabbs, chunkCount, chunkSize);
     printMap(maze, size);
 
     // Free memory
@@ -90,10 +91,9 @@ int main()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int aabbCount, int input, Vector2 mouseDelta,
-                 double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int input, Vector2 mouseDelta, double deltaTime)
 {
-    // drawCall(*screen, *camera, aabbs, aabbCount);
+    drawCall(*screen, *camera, aabbs);
     // camera->rotation.pitch += 2.0f * deltaTime;
     handleInput(input, camera, deltaTime);
 }
@@ -104,15 +104,15 @@ bool gameRunning()
     return getch() != 'q';
 }
 
-void debugPrintAABB(AABB **aabbs, int aabbCount)
+void debugPrintAABB(AABB **aabbs, int chunkCount, int chunkSize)
 {
     printf("Geometry data:\n");
-    for (int i = 0; i < aabbCount; i++)
+    for (int i = 0; i < chunkCount; i++)
     {
-        printf("Chunk %d:\n", i);
-        for (int j = 0; j < aabbCount; j++)
+        printf("Chunk %d:\n", i + 1);
+        for (int j = 0; j < chunkSize * chunkSize; j++)
         {
-            printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j, aabbs[i][j].min.x, aabbs[i][j].min.y,
+            printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.y,
                    aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
         }
     }

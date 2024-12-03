@@ -6,14 +6,14 @@
 Vector3 acceleration = {0, 0, 0};
 float speed = 0.02f;
 float maxSpeed = 0.01f;
-float drag = 0.1f;
+float drag = 50.0f;
 
 void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 {
     float vLength = vectorLength(*acceleration);
     if (vLength > 0.0f)
     {
-        Vector3 dragVector = multiplyVectorByFloat(*acceleration, -drag);
+        Vector3 dragVector = multiplyVectorByFloat(*acceleration, -drag * deltaTime);
         *acceleration = addVector3(*acceleration, dragVector);
     }
 }

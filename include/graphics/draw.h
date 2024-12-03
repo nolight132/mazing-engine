@@ -5,6 +5,6 @@
 #include <graphics/screen.h>
 
 void initDraw();
-void drawCall(Screen screen, Camera camera, AABB *aabbs, int aabbCount);
+void drawCall(Screen screen, Camera camera, AABB **aabbs);
 
 #endif // DRAW_H

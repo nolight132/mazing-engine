@@ -7,11 +7,10 @@
 #include <time.h>
 #include <types.h>
 
-void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int aabbCount, int input, Vector2 mouseDelta,
-                 double deltaTime);
+void deltaUpdate(Screen *screen, Camera *camera, AABB **aabbs, int input, Vector2 mouseDelta, double deltaTime);
 bool gameRunning();
 // Function to calculate the time difference (delta time) in seconds between two times
 double calculateDeltaTime(struct timespec start, struct timespec end);
-void debugPrintAABB(AABB **aabb, int aabbCount);
+void debugPrintAABB(AABB **aabbs, int chunkCount, int chunkSize);
 
 #endif // MAIN_H

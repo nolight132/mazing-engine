@@ -67,16 +67,16 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     return ray;
 }
 
-float raycastCall(AABB *aabbs, int aabbCount, Camera camera, Screen screen, int pixelRow, int pixelCol)
+float raycastCall(AABB **aabbs, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
     float tmin = INFINITY;
     Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
     float t;
-    for (int i = 0; i < aabbCount; i++)
+    for (int i = 0; i < 64; i++)
     {
-        if (aabbs[i].min.x - 5 < camera.position.x)
+        if (aabbs[0][i].min.x - 5 < camera.position.x)
         {
-            t = raycast(ray, aabbs[i]);
+            t = raycast(ray, aabbs[0][i]);
             if (t <= tmin && t >= 0)
             {
                 tmin = t;

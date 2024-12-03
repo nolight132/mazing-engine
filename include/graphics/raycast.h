@@ -6,6 +6,6 @@
 #include <stdbool.h>
 #include <types.h>
 
-float raycastCall(AABB *aabbs, int aabbCount, Camera camera, Screen screen, int pixelRow, int pixelCol);
+float raycastCall(AABB **aabbs, Camera camera, Screen screen, int pixelRow, int pixelCol);
 
 #endif // RAYCAST_H

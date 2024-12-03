@@ -1,44 +1,33 @@
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <types.h>
 
-AABB **generateAABBs(int **maze, int size, int *aabbCount, int chunkSize)
+AABB **generateAABBs(int **maze, int size, int chunkSize, int *chunkCount)
 {
-    AABB *aabbs = (AABB *)malloc(sizeof(AABB));
-    for (int z = 0; z < size; z++)
+    *chunkCount = pow(size / (float)chunkSize, 2);
+    AABB **aabbs = (AABB **)malloc(sizeof(AABB *) * *chunkCount);
+    int i = 0;
+    for (int chunkZ = 0; chunkZ < size / chunkSize; chunkZ++)
     {
-        for (int x = 0; x < size; x++)
+        for (int chunkX = 0; chunkX < size / chunkSize; chunkX++, i++)
         {
-            if (maze[z][x] == WALL)
+            int chunkAabbCount = 0;
+            for (int z = chunkZ * chunkSize; z < (chunkZ + 1) * chunkSize; z++)
             {
-                AABB candidate;
-                candidate.min = (Vector3){0, x, z};
-                candidate.max = (Vector3){2, (x + 1), (z + 1)};
-                if (*aabbCount > 0 && aabbs[*aabbCount - 1].min.z == candidate.min.z &&
-                    maze[(int)candidate.min.z][(int)candidate.min.x - 1] == WALL)
-                { // Merge AABBs horizontally
-                    aabbs[*aabbCount - 1].max = candidate.max;
-                }
-                else if (z > 0 && maze[z - 1][x] == WALL && maze[z - 1][x + 1] != WALL && maze[z - 1][x - 1] != WALL)
-                { // Merge AABBs vertically
-                    for (int i = 1; i < *aabbCount; i++)
+                for (int x = chunkX * chunkSize; x < (chunkX + 1) * chunkSize; x++)
+                {
+                    if (maze[z][x] != WALL)
                     {
-                        if (aabbs[i].max.z == candidate.max.z - 1 && aabbs[i].max.x == candidate.max.x)
-                        {
-                            if (aabbs[i][j].max.z == candidate.max.z - 1 && aabbs[j][i].max.x == candidate.max.x)
-                            {
-                                aabbs[i][j].max = candidate.max;
-                                break;
-                            }
-                        }
+                        continue;
                     }
-                    else
-                    {
-                        aabbs[i] = (AABB *)realloc(aabbs[i], sizeof(AABB) * (chunkAabbCount + 1));
-                        aabbs[i][chunkAabbCount] = candidate;
-                        chunkAabbCount++;
-                        (*aabbCount)++;
-                    }
+                    AABB candidate;
+                    candidate.min = (Vector3){0, x, z};
+                    candidate.max = (Vector3){2, (x + 1), (z + 1)};
+
+                    aabbs[i] = (AABB *)realloc(aabbs[i], sizeof(AABB) * (chunkAabbCount + 1));
+                    aabbs[i][chunkAabbCount] = candidate;
+                    chunkAabbCount++;
                 }
             }
         }
@@ -46,7 +35,7 @@ AABB **generateAABBs(int **maze, int size, int *aabbCount, int chunkSize)
     return aabbs;
 }
 
-void initGeometry(AABB ***aabbs, int *aabbCount, int **maze, int size)
+void initGeometry(AABB ***aabbs, int chunkSize, int *chunkCount, int **maze, int size)
 {
-    *aabbs = generateAABBs(maze, size, aabbCount, 8);
+    *aabbs = generateAABBs(maze, size, chunkSize, chunkCount);
 }
