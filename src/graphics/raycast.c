@@ -33,6 +33,7 @@ float raycast(Ray ray, AABB box)
     {
         return tmax;
     }
+    Vector3 intersectionPoint = addVector(ray.origin, multiplyVectorByFloat(ray.direction, tmin));
     return tmin;
 }
 
