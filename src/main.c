@@ -4,7 +4,6 @@
 #include <graphics/screen.h>
 #include <graphics/vector.h>
 #include <input/input.h>
-#include <main.h>
 #include <map/map.h>
 #include <memory/memoryManagement.h>
 #include <ncurses.h>
@@ -14,6 +13,30 @@
 #include <types.h>
 #include <unistd.h>
 
+// Update loop adjusted for delta time. Called every frame.
+void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int input, double deltaTime)
+{
+    drawCall(*screen, *camera, geometry);
+    // camera->rotation.pitch += 2.0f * deltaTime;
+    handleInput(input, camera, deltaTime);
+}
+
+void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
+{
+    printf("Geometry data:\n");
+    for (int i = 0; i < chunkCount; i++)
+    {
+        printf("Size: %d\nChunk %d:\n", chunkSizeData[i], i + 1);
+        for (int j = 0; j < chunkSizeData[i]; j++)
+        {
+            printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.y,
+                   aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
+        }
+    }
+}
+
+// Not using #define here to enable the user
+// to change the size of the maze later
 const int size = 16;
 
 int main()
@@ -36,25 +59,15 @@ int main()
     long long frameTime = 0;
     long long sleepTime = 0;
 
-    MEVENT lastMouseEvent;
     int ch;
-    getmouse(&lastMouseEvent);
-    MEVENT currentMouseEvent = lastMouseEvent;
-
     while ((ch = getch()) != 'q')
     { // Quit on 'q'
         clear();
-        getmouse(&currentMouseEvent);
-        Vector2 mouseDelta = (Vector2){
-            (float)(currentMouseEvent.x - lastMouseEvent.x),
-            (float)(currentMouseEvent.y - lastMouseEvent.y),
-        };
         struct timespec start, end;
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, geometry, ch, mouseDelta, frameTime / 1e9f);
-        lastMouseEvent = currentMouseEvent;
+        deltaUpdate(&screen, &camera, geometry, ch, frameTime / 1e9f);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
@@ -86,34 +99,4 @@ int main()
     free(geometry.aabbs);
 
     return 0;
-}
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-// Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int input, Vector2 mouseDelta, double deltaTime)
-{
-    drawCall(*screen, *camera, geometry);
-    // camera->rotation.pitch += 2.0f * deltaTime;
-    handleInput(input, camera, deltaTime);
-}
-#pragma GCC diagnostic pop
-
-bool gameRunning()
-{
-    return getch() != 'q';
-}
-
-void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
-{
-    printf("Geometry data:\n");
-    for (int i = 0; i < chunkCount; i++)
-    {
-        printf("Size: %d\nChunk %d:\n", chunkSizeData[i], i + 1);
-        for (int j = 0; j < chunkSizeData[i]; j++)
-        {
-            printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.y,
-                   aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
-        }
-    }
 }
