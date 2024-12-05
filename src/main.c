@@ -24,15 +24,18 @@ void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int inpu
 void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
 {
     printf("Geometry data:\n");
+    int total = 0;
     for (int i = 0; i < chunkCount; i++)
     {
         printf("Size: %d\nChunk %d:\n", chunkSizeData[i], i + 1);
         for (int j = 0; j < chunkSizeData[i]; j++)
         {
+            total++;
             printf("AABB %d: min: %.2f,%.2f,%.2f max: %.2f,%.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.y,
                    aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.y, aabbs[i][j].max.z);
         }
     }
+    printf("Total AABBs: %d\n", total);
 }
 
 // Not using #define here to enable the user
