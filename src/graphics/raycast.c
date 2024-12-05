@@ -50,8 +50,7 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     Vector3 right = (Vector3){0, cos(camera.rotation.yaw), -sin(camera.rotation.yaw)};
     right = normalize(right);
 
-    Vector3 up = (Vector3){cos(camera.rotation.pitch), sin(camera.rotation.pitch) * sin(camera.rotation.yaw),
-                           sin(camera.rotation.pitch) * cos(camera.rotation.yaw)};
+    Vector3 up = (Vector3){-1, 0, 0};
     up = normalize(up);
 
     // Map pixel coordinates to normalized screen space (-1 to 1)
