@@ -40,7 +40,7 @@ void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 16;
+const int size = 128;
 
 int main()
 {
@@ -56,7 +56,7 @@ int main()
     Camera camera = {0};
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, 50, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, 50, (Vector3){1.0f, 16.0f, 16.0f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = 0;
@@ -85,7 +85,8 @@ int main()
         // Calculate and display FPS
         int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
         float frameTimeF = (float)frameTime / 1e6;
-        mvprintw(1, 0, "Res: %dx%d\n", screen.width, screen.height);
+        mvprintw(1, 0, "Res: %dx%d, Map: %dx%d, %d chunks\n", screen.width, screen.height, size, size,
+                 geometry.chunkCount);
         mvprintw(4, 0, "Y/X/Z: %.2f, %.2f, %.2f. Yaw/Pitch: %.2f, %.2f", camera.position.y, camera.position.x,
                  camera.position.z, camera.rotation.yaw, camera.rotation.pitch);
         mvprintw(5, 0, "frameTime: %.2f ms, %d FPS", frameTimeF, currentFps);

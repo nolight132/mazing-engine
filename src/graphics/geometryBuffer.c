@@ -90,7 +90,7 @@ GeometryData generateAABBs(int **maze, int size, int chunkSize)
             chunkSizeData[i] = chunkAabbCount;
         }
     }
-    GeometryData data = {aabbs, chunkCount, chunkSizeData};
+    GeometryData data = {aabbs, chunkCount, chunkSize, chunkSizeData};
     return data;
 }
 

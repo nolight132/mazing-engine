@@ -43,6 +43,7 @@ typedef struct
 {
     AABB **aabbs;
     int chunkCount;
+    int defaultChunkSize;
     int *chunkSizeData;
 } GeometryData;
 
