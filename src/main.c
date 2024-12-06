@@ -31,8 +31,8 @@ void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
         for (int j = 0; j < chunkSizeData[i]; j++)
         {
             total++;
-            printf("AABB %d: min: %.2f,%.2f max: %.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].max.x,
-                   aabbs[i][j].max.z, aabbs[i][j].max.z);
+            printf("AABB %d: min: %.2f,%.2f max: %.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.z,
+                   aabbs[i][j].max.x, aabbs[i][j].max.z);
         }
     }
     printf("Total AABBs: %d\n", total);
