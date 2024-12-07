@@ -40,26 +40,27 @@ void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 128;
+const int size = 300;
 
 int main()
 {
     srand(time(NULL));
 
-    int chunkSize = 8;
+    int chunkSize = 2;
     int **maze = generateMaze(size);
-    printMap(maze, size);
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
+    int renderDistance = 2;
+    int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, 50, (Vector3){1.0f, 16.0f, 16.0f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 16.0f, 16.0f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
-    long long frameTime = 0;
+    long long frameTime = frameDuration;
     long long sleepTime = 0;
 
     int ch;

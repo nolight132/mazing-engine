@@ -1,5 +1,3 @@
-#include "map/map.h"
-#include "memory/memoryManagement.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,36 +41,24 @@ GeometryData generateAABBs(int **maze, int size, int chunkSize)
                     candidate.min = (Vector3){0, x, z};
                     candidate.max = (Vector3){2, (x + 1), (z + 1)};
 
-                    // Try to merge horizontally
                     printf("Checking x: %d, z: %d\n", x, z);
+                    // Try to merge horizontally
                     if (x > chunkX * chunkSize && maze[z][x - 1] == WALL &&
                         aabbs[i][chunkAabbCount - 1].min.z == candidate.min.z &&
                         aabbs[i][chunkAabbCount - 1].max.z == candidate.max.z &&
                         aabbs[i][chunkAabbCount - 1].max.x == x)
                     {
-                        printf("Success. Merging horizontally...\n");
-                        printf("Previous AABB: min: %.2f,%.2f max: %.2f,%.2f\n", aabbs[i][chunkAabbCount - 1].min.x,
-                               aabbs[i][chunkAabbCount - 1].min.z, aabbs[i][chunkAabbCount - 1].max.x,
-                               aabbs[i][chunkAabbCount - 1].max.z);
                         aabbs[i][chunkAabbCount - 1].max.x += 1;
                     }
                     // TODO : Try to merge vertically
                     else if (z != 0 && z > chunkZ * chunkSize && maze[z - 1][x] == WALL &&
                              ((x == size - 1) || (maze[z - 1][x + 1] != WALL)) && maze[z - 1][x - 1] != WALL)
                     {
-                        printf("chunksize %d, chunkAabbCount %d\n", chunkSize, chunkAabbCount);
-                        int **copyMap = copy2DArray(maze, size);
-                        copyMap[z][x] = BORDER;
-                        printMap(copyMap, size);
-                        free2DArray((void **)copyMap, size);
                         for (int j = 0; j < chunkAabbCount; j++)
                         {
                             if (aabbs[i][j].min.x == x && aabbs[i][j].max.z == z)
                             {
                                 aabbs[i][j].max.z = candidate.max.z;
-                                printf("WE EMERGE VICTORIOUS!!!! WE DID IT LADS!! Merging vertically...\nNew AABB: "
-                                       "min: %.2f,%.2f max: %.2f,%.2f\n",
-                                       aabbs[i][j].min.x, aabbs[i][j].min.z, aabbs[i][j].max.x, aabbs[i][j].max.z);
                                 break;
                             }
                         }

@@ -69,6 +69,7 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
 
 float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
+    int renderDistance = 2;
     int rowChunkCount = (int)sqrt(data.chunkCount);
 
     int currentChunkX = (int)(camera.position.x / data.defaultChunkSize);
@@ -79,9 +80,9 @@ float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow,
     float t;
 
     // Iterate over adjacent chunks (current + neighbors)
-    for (int dx = -1; dx <= 1; dx++)
+    for (int dx = -renderDistance; dx <= renderDistance; dx++)
     {
-        for (int dy = -1; dy <= 1; dy++)
+        for (int dy = -renderDistance; dy <= renderDistance; dy++)
         {
             int chunkX = currentChunkX + dx;
             int chunkY = currentChunkY + dy;
