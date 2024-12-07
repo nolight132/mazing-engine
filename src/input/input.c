@@ -4,7 +4,7 @@
 #include <ncurses.h>
 #include <types.h>
 
-Vector3 acceleration = {0, 0, 0};
+Vector3 velocity = {0, 0, 0};
 float speed = 0.05f;
 float maxSpeed = 0.05f;
 float drag = 50.0f;
@@ -30,24 +30,24 @@ void handleInput(int input, Camera *camera, double deltaTime)
 
     if (input != ERR)
     {
-        float vLength = vectorLength(acceleration);
+        float vLength = vectorLength(velocity);
         switch (input)
         {
             case 'w': // Move forward
                 if (vLength < maxSpeed)
-                    acceleration = addVector(acceleration, multiplyVectorByFloat(cameraDirection, speed));
+                    velocity = addVector(velocity, multiplyVectorByFloat(cameraDirection, speed));
                 break;
             case 'a': // Strafe left
                 if (vLength < maxSpeed)
-                    acceleration = addVector(acceleration, multiplyVectorByFloat(right, speed));
+                    velocity = addVector(velocity, multiplyVectorByFloat(right, speed));
                 break;
             case 's': // Move backward
                 if (vLength < maxSpeed)
-                    acceleration = subtractVector(acceleration, multiplyVectorByFloat(cameraDirection, speed));
+                    velocity = subtractVector(velocity, multiplyVectorByFloat(cameraDirection, speed));
                 break;
             case 'd': // Strafe right
                 if (vLength < maxSpeed)
-                    acceleration = subtractVector(acceleration, multiplyVectorByFloat(right, speed));
+                    velocity = subtractVector(velocity, multiplyVectorByFloat(right, speed));
                 break;
             case KEY_LEFT:
                 camera->rotation.yaw += M_PI / 4;
@@ -57,6 +57,6 @@ void handleInput(int input, Camera *camera, double deltaTime)
                 break;
         }
     }
-    camera->position = addVector3(camera->position, acceleration);
-    applyMovementDrag(&acceleration, drag, deltaTime);
+    camera->position = addVector3(camera->position, velocity);
+    applyMovementDrag(&velocity, drag, deltaTime);
 }

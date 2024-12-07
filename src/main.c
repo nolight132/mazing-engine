@@ -21,23 +21,6 @@ void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int inpu
     handleInput(input, camera, deltaTime);
 }
 
-void debugPrintAABB(AABB **aabbs, int chunkCount, int *chunkSizeData)
-{
-    printf("Geometry data:\n");
-    int total = 0;
-    for (int i = 0; i < chunkCount; i++)
-    {
-        printf("Size: %d\nChunk %d:\n", chunkSizeData[i], i + 1);
-        for (int j = 0; j < chunkSizeData[i]; j++)
-        {
-            total++;
-            printf("AABB %d: min: %.2f,%.2f max: %.2f,%.2f\n", j + 1, aabbs[i][j].min.x, aabbs[i][j].min.z,
-                   aabbs[i][j].max.x, aabbs[i][j].max.z);
-        }
-    }
-    printf("Total AABBs: %d\n", total);
-}
-
 // Not using #define here to enable the user
 // to change the size of the maze later
 const int size = 300;
@@ -46,18 +29,18 @@ int main()
 {
     srand(time(NULL));
 
-    int chunkSize = 2;
+    int chunkSize = 4;
     int **maze = generateMaze(size);
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
-    int renderDistance = 2;
+    int renderDistance = 1;
     int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 16.0f, 16.0f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 16.5f, 16.5f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = frameDuration;
@@ -96,7 +79,6 @@ int main()
     endwin();
 
     // Debug print
-    debugPrintAABB(geometry.aabbs, geometry.chunkCount, geometry.chunkSizeData);
     printMap(maze, size);
 
     // Free memory

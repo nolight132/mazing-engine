@@ -41,7 +41,6 @@ GeometryData generateAABBs(int **maze, int size, int chunkSize)
                     candidate.min = (Vector3){0, x, z};
                     candidate.max = (Vector3){2, (x + 1), (z + 1)};
 
-                    printf("Checking x: %d, z: %d\n", x, z);
                     // Try to merge horizontally
                     if (x > chunkX * chunkSize && maze[z][x - 1] == WALL &&
                         aabbs[i][chunkAabbCount - 1].min.z == candidate.min.z &&
