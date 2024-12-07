@@ -33,7 +33,7 @@ float raycast(Ray ray, AABB box)
     {
         return tmax;
     }
-    Vector3 intersectionPoint = addVector(ray.origin, multiplyVectorByFloat(ray.direction, tmin));
+    // Vector3 intersectionPoint = addVector(ray.origin, multiplyVectorByFloat(ray.direction, tmin));
     return tmin;
 }
 
@@ -67,13 +67,8 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     return ray;
 }
 
-float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow, int pixelCol)
+float raycastCall(GeometryData geometry, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
-    int rowChunkCount = (int)sqrt(data.chunkCount);
-
-    int currentChunkX = (int)(camera.position.x / data.defaultChunkSize);
-    int currentChunkY = (int)(camera.position.z / data.defaultChunkSize);
-
     float tmin = INFINITY;
     Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
     float t;
@@ -81,24 +76,24 @@ float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow,
     // Iterate over adjacent chunks (current + neighbors)
     for (int dx = -camera.renderDistance; dx <= camera.renderDistance; dx++)
     {
-        for (int dy = -camera.renderDistance; dy <= camera.renderDistance; dy++)
+        for (int dz = -camera.renderDistance; dz <= camera.renderDistance; dz++)
         {
-            int chunkX = currentChunkX + dx;
-            int chunkY = currentChunkY + dy;
+            int chunkX = geometry.currentChunkX + dx;
+            int chunkZ = geometry.currentChunkZ + dz;
 
             // Check bounds to ensure valid chunk indices
-            if (chunkX < 0 || chunkX >= rowChunkCount || chunkY < 0 || chunkY >= rowChunkCount)
+            if (chunkX < 0 || chunkX >= geometry.chunkCountRow || chunkZ < 0 || chunkZ >= geometry.chunkCountRow)
             {
                 continue;
             }
 
             // Calculate the corresponding chunk index in the linear array
-            int chunkIndex = chunkY * rowChunkCount + chunkX;
+            int chunkIndex = chunkZ * geometry.chunkCountRow + chunkX;
 
             // Iterate through the objects in this chunk
-            for (int j = 0; j < data.chunkSizeData[chunkIndex]; j++)
+            for (int j = 0; j < geometry.chunkSizeData[chunkIndex]; j++)
             {
-                t = raycast(ray, data.aabbs[chunkIndex][j]);
+                t = raycast(ray, geometry.aabbs[chunkIndex][j]);
                 if (t <= tmin && t >= 0)
                 {
                     tmin = t;

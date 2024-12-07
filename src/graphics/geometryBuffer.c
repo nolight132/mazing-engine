@@ -1,27 +1,21 @@
+#include <graphics/camera.h>
 #include <math.h>
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <types.h>
 
-int **copy2DArray(int **array, int size)
+void updateGeometry(GeometryData *geometry, Camera camera)
 {
-    int **copy = (int **)malloc(sizeof(int *) * size);
-    for (int i = 0; i < size; i++)
-    {
-        copy[i] = (int *)malloc(sizeof(int) * size);
-        for (int j = 0; j < size; j++)
-        {
-            copy[i][j] = array[i][j];
-        }
-    }
-    return copy;
+    geometry->currentChunkZ = (int)camera.position.z / geometry->defaultChunkSize;
+    geometry->currentChunkX = (int)camera.position.x / geometry->defaultChunkSize;
 }
 
 GeometryData generateAABBs(int **maze, int size, int chunkSize)
 {
-    int chunkCount = pow(size / (float)chunkSize, 2);
-    int *chunkSizeData = (int *)malloc(sizeof(int) * chunkCount);
-    AABB **aabbs = (AABB **)malloc(sizeof(AABB *) * chunkCount);
+    int chunkCountRow = size / (float)chunkSize;
+    int *chunkSizeData = (int *)malloc(sizeof(int) * chunkCountRow * chunkCountRow);
+    AABB **aabbs = (AABB **)malloc(sizeof(AABB *) * chunkCountRow * chunkCountRow);
     int i = 0;
     for (int chunkZ = 0; chunkZ < size / chunkSize; chunkZ++)
     {
@@ -75,7 +69,7 @@ GeometryData generateAABBs(int **maze, int size, int chunkSize)
             chunkSizeData[i] = chunkAabbCount;
         }
     }
-    GeometryData data = {aabbs, chunkCount, chunkSize, chunkSizeData};
+    GeometryData data = {aabbs, pow(chunkCountRow, 2), chunkCountRow, chunkSize, chunkSizeData, 0, 0};
     return data;
 }
 

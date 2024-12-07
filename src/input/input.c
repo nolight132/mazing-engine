@@ -1,7 +1,9 @@
 #include <graphics/camera.h>
+#include <graphics/raycast.h>
 #include <graphics/vector.h>
 #include <math.h>
 #include <ncurses.h>
+#include <stdio.h>
 #include <types.h>
 
 Vector3 velocity = {0, 0, 0};
@@ -19,7 +21,34 @@ void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
     }
 }
 
-void handleInput(int input, Camera *camera, double deltaTime)
+bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
+{
+    int currentChunkIndex = geometry.currentChunkZ * geometry.chunkCountRow + geometry.currentChunkX;
+    Vector3 normalizedVelocity = normalize(velocity);
+    Ray r = {camera.position, normalizedVelocity};
+    float distance = 0.5f;
+
+    for (int i = 0; i < geometry.chunkSizeData[currentChunkIndex]; i++)
+    {
+        float newDistance = raycast(r, geometry.aabbs[currentChunkIndex][i]);
+        if (newDistance == -1)
+        {
+            continue;
+        }
+        else if (fabs(newDistance) < distance)
+        {
+            distance = fabs(newDistance);
+        }
+    }
+    // mvprintw(0, 100, "distance: %f", distance);
+    if (distance > 0.1f)
+    {
+        return true;
+    }
+    return false;
+}
+
+void handleInput(int input, Camera *camera, GeometryData geometry, double deltaTime)
 {
     Vector3 cameraDirection = calculateDirection(camera->rotation);
     Vector3 up = (Vector3){1, 0, 0};
@@ -57,6 +86,13 @@ void handleInput(int input, Camera *camera, double deltaTime)
                 break;
         }
     }
-    camera->position = addVector3(camera->position, velocity);
-    applyMovementDrag(&velocity, drag, deltaTime);
+    if (!canGoThrough(*camera, velocity, geometry))
+    {
+        velocity = (Vector3){0, 0, 0};
+    }
+    else
+    {
+        camera->position = addVector3(camera->position, velocity);
+        applyMovementDrag(&velocity, drag, deltaTime);
+    }
 }

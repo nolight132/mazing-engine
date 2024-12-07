@@ -14,16 +14,16 @@
 #include <unistd.h>
 
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, GeometryData geometry, int input, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, GeometryData *geometry, int input, double deltaTime)
 {
-    drawCall(*screen, *camera, geometry);
-    // camera->rotation.pitch += 2.0f * deltaTime;
-    handleInput(input, camera, deltaTime);
+    updateGeometry(geometry, *camera);
+    drawCall(*screen, *camera, *geometry);
+    handleInput(input, camera, *geometry, deltaTime);
 }
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 300;
+const int size = 64;
 
 int main()
 {
@@ -40,7 +40,7 @@ int main()
     int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 16.5f, 16.5f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = frameDuration;
@@ -54,7 +54,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, geometry, ch, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, &geometry, ch, frameTime / 1e9f);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
@@ -69,11 +69,17 @@ int main()
         // Calculate and display FPS
         int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
         float frameTimeF = (float)frameTime / 1e6;
-        mvprintw(1, 0, "Res: %dx%d, Map: %dx%d, %d chunks\n", screen.width, screen.height, size, size,
-                 geometry.chunkCount);
-        mvprintw(4, 0, "Y/X/Z: %.2f, %.2f, %.2f. Yaw/Pitch: %.2f, %.2f", camera.position.y, camera.position.x,
-                 camera.position.z, camera.rotation.yaw, camera.rotation.pitch);
-        mvprintw(5, 0, "frameTime: %.2f ms, %d FPS", frameTimeF, currentFps);
+        // Print debug info
+        mvprintw(0, 0, "Press 'q' to quit.");
+        mvprintw(1, 0, "| Res: %dx%d", screen.width, screen.height);
+        mvprintw(1, 30, "| Map: %dx%d (%d chunks)", size, size, size * size);
+        mvprintw(1, 60, "|");
+        mvprintw(2, 0, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
+        mvprintw(2, 30, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
+        mvprintw(2, 60, "| P/Y: %.2f %.2f", camera.rotation.pitch, camera.rotation.yaw);
+        mvprintw(3, 0, "| %d FPS (%d max)", currentFps, screen.fps);
+        mvprintw(3, 30, "| frameTime: %.2f ms", frameTimeF);
+        mvprintw(3, 60, "|");
         refresh();
     }
     endwin();
