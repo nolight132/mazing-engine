@@ -23,7 +23,7 @@ void deltaUpdate(Screen *screen, Camera *camera, GeometryData *geometry, int inp
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 64;
+const int size = 128;
 
 int main()
 {
@@ -31,12 +31,15 @@ int main()
 
     int chunkSize = 4;
     int **maze = generateMaze(size);
+    // Debug print
+    printMap(maze, size);
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
+    free2DArray((void **)maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
-    int renderDistance = 1;
+    int renderDistance = 1; // Optimal value is 1, adjustable for debugging
     int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
@@ -83,13 +86,6 @@ int main()
         refresh();
     }
     endwin();
-
-    // Debug print
-    printMap(maze, size);
-
-    // Free memory
-    free2DArray((void **)maze, size);
-    free(geometry.aabbs);
 
     return 0;
 }
