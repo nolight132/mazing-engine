@@ -16,8 +16,8 @@ void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
     float vLength = vectorLength(*acceleration);
     if (vLength > 0.0f)
     {
-        Vector3 dragVector = multiplyVectorByFloat(*acceleration, -drag * deltaTime);
-        *acceleration = addVector3(*acceleration, dragVector);
+        float decayFactor = expf(-drag * deltaTime); // Exponential decay
+        *acceleration = multiplyVectorByFloat(*acceleration, decayFactor);
     }
 }
 
