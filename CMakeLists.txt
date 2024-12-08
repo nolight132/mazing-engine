@@ -23,7 +23,7 @@ file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/*.c")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link required libraries (e.g., ncurses)
-target_link_libraries(${PROJECT_NAME} ncurses)
+target_link_libraries(${PROJECT_NAME} ncurses m)
 
 # Add a custom clean target
 add_custom_target(clean-all

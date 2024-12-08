@@ -46,12 +46,10 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     float aspectRatio = (float)screen.width / (float)screen.height;
     float tanHalfFovY = tanf(fov * 0.5f);
 
-    // Calculate the camera basis vectors
+    // Calculate camera basis vectors
     Vector3 right = (Vector3){0, cos(camera.rotation.yaw), -sin(camera.rotation.yaw)};
     right = normalize(right);
-
-    Vector3 up = (Vector3){-1, 0, 0};
-    up = normalize(up);
+    Vector3 up = (Vector3){-1, 0, 0}; // Assumes 'up' is constant, probably a TODO if I end up doing pitch
 
     // Map pixel coordinates to normalized screen space (-1 to 1)
     float pixelNdcY = (2.0f * (pixelRow + 0.5f) / screen.height - 1.0f) * tanHalfFovY * aspectRatio;
