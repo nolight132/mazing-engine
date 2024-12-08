@@ -82,3 +82,13 @@ Vector3 crossProduct(Vector3 a, Vector3 b)
 {
     return (Vector3){a.x * b.z - a.z * b.x, a.z * b.y - a.y * b.z, a.y * b.x - a.x * b.y};
 }
+
+float dotVector2(Vector2 v1, Vector2 v2)
+{
+    return v1.y * v2.y + v1.x * v2.x;
+}
+
+float dotVector3(Vector3 v1, Vector3 v2)
+{
+    return v1.y * v2.y + v1.x * v2.x + v1.z * v2.z;
+}
