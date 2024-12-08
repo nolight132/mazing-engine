@@ -35,12 +35,11 @@ bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
         {
             continue;
         }
-        else if (fabs(newDistance) < distance)
+        else if (newDistance < distance)
         {
-            distance = fabs(newDistance);
+            distance = newDistance;
         }
     }
-    // mvprintw(0, 100, "distance: %f", distance);
     if (distance > 0.1f)
     {
         return true;
