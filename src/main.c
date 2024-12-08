@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <types.h>
+#include <ui/ui.h>
 #include <unistd.h>
 
 // Update loop adjusted for delta time. Called every frame.
@@ -69,20 +70,7 @@ int main()
             ts.tv_nsec = sleepTime % (int)1e9; // Remainder as nanoseconds
             nanosleep(&ts, NULL);              // Sleep for the remaining time
         }
-        // Calculate and display FPS
-        int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
-        float frameTimeF = (float)frameTime / 1e6;
-        // Print debug info
-        mvprintw(0, 0, "Press 'q' to quit.");
-        mvprintw(1, 0, "| Res: %dx%d", screen.width, screen.height);
-        mvprintw(1, 30, "| Map: %dx%d (%d chunks)", size, size, size * size);
-        mvprintw(1, 60, "|");
-        mvprintw(2, 0, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
-        mvprintw(2, 30, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
-        mvprintw(2, 60, "| P/Y: %.2f %.2f", camera.rotation.pitch, camera.rotation.yaw);
-        mvprintw(3, 0, "| %d FPS (%d max)", currentFps, screen.fps);
-        mvprintw(3, 30, "| frameTime: %.2f ms", frameTimeF);
-        mvprintw(3, 60, "|");
+        printDebugInfo(screen, camera, geometry, size, frameTime, sleepTime);
         refresh();
     }
     endwin();
