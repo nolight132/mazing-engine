@@ -76,6 +76,7 @@ void generateBranches(int **map, Vector2 pos, bool **visitedTiles, int d, Vector
         pathIndex--;
         generateBranches(map, path[pathIndex], visitedTiles, d, path, pathIndex);
     }
+    free(validDirs);
 }
 Vector2 *getValidDirs(Vector2 pos, bool **visitedTiles, int d, int *validCount)
 {
