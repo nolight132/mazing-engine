@@ -44,7 +44,7 @@ void drawCall(Screen screen, Camera camera, GeometryData geometry)
     {
         for (int x = 0; x < screen.width; x++)
         {
-            char c = getGradientChar(raycastCall(geometry, camera, screen, y, x), renderDistanceBlocks);
+            char c = getGradientChar(renderCall(geometry, camera, screen, y, x), renderDistanceBlocks);
             mvaddch(y, x, c);
         }
     }

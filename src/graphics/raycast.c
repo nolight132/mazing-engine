@@ -65,7 +65,7 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
     return ray;
 }
 
-float raycastCall(GeometryData geometry, Camera camera, Screen screen, int pixelRow, int pixelCol)
+float renderCall(GeometryData geometry, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
     float tmin = INFINITY;
     Ray ray = computeRay(camera, screen, pixelRow, pixelCol);

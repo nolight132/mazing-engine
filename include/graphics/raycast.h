@@ -7,6 +7,6 @@
 #include <types.h>
 
 float raycast(Ray ray, AABB box);
-float raycastCall(GeometryData data, Camera camera, Screen screen, int pixelRow, int pixelCol);
+float renderCall(GeometryData data, Camera camera, Screen screen, int pixelRow, int pixelCol);
 
 #endif // RAYCAST_H
