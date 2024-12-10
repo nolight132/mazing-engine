@@ -23,11 +23,11 @@ void initDraw()
     nodelay(stdscr, TRUE); // Make getch non-blocking
 }
 
-char getGradientChar(float distance, int renderDistance)
+char getGradientChar(float distance)
 {
     const char *gradient = "#@&%*=+~-,. ";
-    const int gradientLength = 11;          // Number of gradient levels
-    const int maxDistance = renderDistance; // Maximum distance to render
+    const int gradientLength = 11; // Number of gradient levels
+    const int maxDistance = 4;     // Maximum distance to render
 
     int index = (int)((distance / maxDistance) * gradientLength);
     return gradient[index < 0                 ? gradientLength
@@ -39,12 +39,11 @@ char getGradientChar(float distance, int renderDistance)
 void drawCall(Screen screen, Camera camera, GeometryData geometry)
 {
     // Draw logic
-    int renderDistanceBlocks = camera.renderDistance * geometry.defaultChunkSize;
     for (int y = 4; y < screen.height; y++)
     {
         for (int x = 0; x < screen.width; x++)
         {
-            char c = getGradientChar(renderCall(geometry, camera, screen, y, x), renderDistanceBlocks);
+            char c = getGradientChar(renderCall(geometry, camera, screen, y, x));
             mvaddch(y, x, c);
         }
     }
