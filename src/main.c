@@ -44,7 +44,8 @@ int main()
     int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
+    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, size / 2.0f + 0.5f, size / 2.0f + 0.5f},
+               (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = frameDuration;
