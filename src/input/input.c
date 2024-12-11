@@ -23,21 +23,38 @@ void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 
 bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
 {
-    int currentChunkIndex = geometry.currentChunkZ * geometry.chunkCountRow + geometry.currentChunkX;
+    // int currentChunkIndex = geometry.currentChunkZ * geometry.chunkCountRow + geometry.currentChunkX;
     Vector3 normalizedVelocity = normalize(velocity);
     Ray r = {camera.position, normalizedVelocity};
     float distance = 0.5f;
-
-    for (int i = 0; i < geometry.chunkSizeData[currentChunkIndex]; i++)
+    // TODO: OPTIMIZE
+    for (int dx = -camera.renderDistance; dx <= camera.renderDistance; dx++)
     {
-        float newDistance = raycast(r, geometry.aabbs[currentChunkIndex][i]);
-        if (newDistance == -1)
+        for (int dz = -camera.renderDistance; dz <= camera.renderDistance; dz++)
         {
-            continue;
-        }
-        else if (newDistance < distance)
-        {
-            distance = newDistance;
+            int chunkX = geometry.currentChunkX + dx;
+            int chunkZ = geometry.currentChunkZ + dz;
+
+            // Check bounds to ensure valid chunk indices
+            if (chunkX < 0 || chunkX >= geometry.chunkCountRow || chunkZ < 0 || chunkZ >= geometry.chunkCountRow)
+            {
+                continue;
+            }
+
+            // Calculate the corresponding chunk index in the linear array
+            int chunkIndex = chunkZ * geometry.chunkCountRow + chunkX;
+            for (int i = 0; i < geometry.chunkSizeData[chunkIndex]; i++)
+            {
+                float newDistance = raycast(r, geometry.aabbs[chunkIndex][i]);
+                if (newDistance == -1)
+                {
+                    continue;
+                }
+                else if (newDistance < distance)
+                {
+                    distance = newDistance;
+                }
+            }
         }
     }
     if (distance > 0.1f)
