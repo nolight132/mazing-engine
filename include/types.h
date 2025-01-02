@@ -5,7 +5,8 @@ enum TileType
 {
     WALL,
     PATH,
-    BORDER
+    BORDER,
+    GOAL
 };
 
 typedef struct
