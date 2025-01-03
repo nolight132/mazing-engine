@@ -10,22 +10,33 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Generate compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Enable all warnings and debugging
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g")
-
 # Add include directories
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Recursively collect all source files in src/
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/*.c")
 
-# Add the executable target
-add_executable(${PROJECT_NAME} ${SOURCES})
+# Define common compile options
+set(COMMON_FLAGS "-Wall -Wextra -std=c99 -fdiagnostics-color=always")
 
-# Link required libraries (e.g., ncurses)
-target_link_libraries(${PROJECT_NAME} ncurses m)
+# Debug target
+add_executable(mazing-engine-debug ${SOURCES})
+target_compile_options(mazing-engine-debug PRIVATE ${COMMON_FLAGS} -O0 -g)
+set_target_properties(mazing-engine-debug PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+target_link_libraries(mazing-engine-debug ncurses m)
 
-# Add a custom clean target
+# Release target
+add_executable(mazing-engine-release ${SOURCES})
+target_compile_options(mazing-engine-release PRIVATE ${COMMON_FLAGS}
+    -Ofast -march=native -flto -funroll-loops -fno-math-errno -fno-trapping-math
+    -fprefetch-loop-arrays -ffp-contract=fast -ftree-vectorize
+    -fsingle-precision-constant -fassociative-math)
+set_target_properties(mazing-engine-release PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+target_link_libraries(mazing-engine-release ncurses m)
+
+# Clean target
 add_custom_target(clean-all
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}
     COMMENT "Removing all build files."

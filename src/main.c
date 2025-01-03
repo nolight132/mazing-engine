@@ -24,7 +24,7 @@ void deltaUpdate(Screen *screen, Camera *camera, GeometryData *geometry, int inp
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 128;
+const int size = 32;
 
 int main()
 {
