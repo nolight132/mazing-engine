@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <types.h>
-#include <ui/ui.h>
+#include <ui/debug.h>
 #include <unistd.h>
 
 // Update loop adjusted for delta time. Called every frame.
