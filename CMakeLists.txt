@@ -17,7 +17,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/*.c")
 
 # Define common compile options
-set(COMMON_FLAGS "-Wall -Wextra -std=c99 -fdiagnostics-color=always")
+set(COMMON_FLAGS -Wall -Wextra -std=c99 -fdiagnostics-color=always)
 
 # Debug target
 add_executable(mazing-engine-debug ${SOURCES})

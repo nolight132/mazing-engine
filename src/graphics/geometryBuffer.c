@@ -59,7 +59,6 @@ GeometryData generateAABBs(int **maze, int size, int chunkSize)
                     // Create new AABB
                     else
                     {
-                        // printf("Creating aabb...%d\n", chunkAabbCount);
                         aabbs[i] = (AABB *)realloc(aabbs[i], sizeof(AABB) * (chunkAabbCount + 1));
                         aabbs[i][chunkAabbCount] = candidate;
                         chunkAabbCount++;

@@ -24,16 +24,21 @@ void deltaUpdate(Screen *screen, Camera *camera, GeometryData *geometry, int inp
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-const int size = 32;
+int size = 12;
 
 int main()
 {
     srand(time(NULL));
 
     int chunkSize = 4;
+    if (size % chunkSize != 0)
+        size += chunkSize - (size % chunkSize);
+
     int **maze = generateMaze(size);
+
     // Debug print
     printMap(maze, size);
+
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
     free2DArray((void **)maze, size);
@@ -44,8 +49,7 @@ int main()
     int fov = 50;
     initDraw();
     initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, size / 2.0f + 0.5f, size / 2.0f + 0.5f},
-               (Rotation){0.0f, 0.0f});
+    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = frameDuration;

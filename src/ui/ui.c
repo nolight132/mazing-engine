@@ -26,3 +26,46 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
     mvprintw(2, col2Start, "|");
     mvprintw(3, col2Start, "|");
 }
+
+void printTile(int type)
+{
+    switch (type)
+    {
+        case PATH:
+            printf("  ");
+            break;
+        case WALL:
+            printf("░░");
+            break;
+        case BORDER:
+            printf("██");
+            break;
+        case GOAL:
+            printf("GG");
+            break;
+    }
+}
+
+void printMap(int **map, int size)
+{
+    for (int x = 0; x < size + 2; x++)
+    {
+        printTile(BORDER);
+    }
+    printf("\n");
+    for (int y = 0; y < size; y++)
+    {
+        printTile(BORDER);
+        for (int x = 0; x < size; x++)
+        {
+            printTile(map[y][x]);
+        }
+        printTile(BORDER);
+        printf("\n");
+    }
+    for (int x = 0; x < size + 2; x++)
+    {
+        printTile(BORDER);
+    }
+    printf("\n");
+}
