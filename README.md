@@ -18,6 +18,13 @@ It will generate random mazes and render them in a first-person perspective usin
     -   [x] First-person perspective
 -   [x] **Collision Detection**
     -   [x] You can't go through walls
-    -   [ ] There are totally no issues where sometimes a couple times a year with the right angle and a correct attitude you actually can for some reason
+    -   [x] There are totally no issues where sometimes a couple times a year with the right angle and a correct attitude you actually can for some reason
+
+## Roadmap
+- Proper scoring system
+- 2D sprite support
+- Basic texture support
+- Interactive minimap in another tty (toggleable)
+- Hardware-accelerated computation
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
