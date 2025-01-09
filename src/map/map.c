@@ -1,3 +1,4 @@
+#include "graphics/vector.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -5,17 +6,28 @@
 #include <time.h>
 #include <types.h>
 
-Vector2 calculateGoal(int **map, int d)
+Vector2 calculateStart(int **map, int d)
 {
-    // Randomly choose a goal
-    int goalY;
-    int goalX;
+    // Randomly choose a start
+    Vector2 start;
     do
     {
-        goalY = rand() % (d - 1);
-        goalX = rand() % (d - 1);
-    } while (map[goalY][goalX] != PATH);
-    return (Vector2){goalY, goalX};
+        start.y = rand() % (d - 1);
+        start.x = rand() % (d - 1);
+    } while (map[(int)start.y][(int)start.x] != PATH);
+    return (Vector2){start.y, start.x};
+}
+
+Vector2 calculateGoal(int **map, int d, Vector2 start)
+{
+    // Randomly choose a goal
+    Vector2 goal;
+    do
+    {
+        goal.y = rand() % (d - 1);
+        goal.x = rand() % (d - 1);
+    } while (map[(int)goal.y][(int)goal.x] != PATH || distance(start, goal) < (float)d / 2);
+    return (Vector2){goal.y, goal.x};
 }
 
 Vector2 *getValidDirs(Vector2 pos, bool **visitedTiles, int d, int *validCount)
@@ -108,7 +120,7 @@ void generatePath(int **map, int d)
     free(visitedTiles);
 }
 
-int **generateMaze(int d)
+Map generateMaze(int d)
 {
     // Initialize the map
     int **map = (int **)malloc(d * sizeof(int *));
@@ -117,8 +129,10 @@ int **generateMaze(int d)
         map[y] = (int *)malloc(d * sizeof(int));
     }
     generatePath(map, d);
+    Vector2 start = calculateStart(map, d);
+    map[(int)start.y][(int)start.x] = START;
     // Apply the goal
-    Vector2 goal = calculateGoal(map, d);
+    Vector2 goal = calculateGoal(map, d, start);
     map[(int)goal.y][(int)goal.x] = GOAL;
-    return map;
+    return (Map){map, d, start, goal};
 }

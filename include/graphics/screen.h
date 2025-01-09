@@ -11,5 +11,6 @@ typedef struct Screen
 } Screen;
 
 void initScreen(Screen *screen, int width, int height, int fps);
+int getRefreshRate();
 
 #endif // SCREEN_H

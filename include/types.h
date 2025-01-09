@@ -6,7 +6,8 @@ enum TileType
     WALL,
     PATH,
     BORDER,
-    GOAL
+    GOAL,
+    START
 };
 
 typedef struct
@@ -36,8 +37,8 @@ typedef struct
 
 typedef struct
 {
-    double yaw;   // Rotation around the y-axis
-    double pitch; // Rotation around the x-axis
+    float yaw;   // Rotation around the y-axis
+    float pitch; // Rotation around the x-axis
 } Rotation;
 
 typedef struct
@@ -50,5 +51,13 @@ typedef struct
     int currentChunkX;
     int currentChunkZ;
 } GeometryData;
+
+typedef struct
+{
+    int **map;
+    int size;
+    Vector2 start;
+    Vector2 goal;
+} Map;
 
 #endif // TYPES_H

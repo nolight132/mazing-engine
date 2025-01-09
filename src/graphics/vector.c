@@ -92,3 +92,23 @@ float dotVector3(Vector3 v1, Vector3 v2)
 {
     return v1.y * v2.y + v1.x * v2.x + v1.z * v2.z;
 }
+
+float distanceVector2(Vector2 a, Vector2 b)
+{
+    return sqrtf(powf(a.y - b.y, 2) + powf(a.x - b.x, 2));
+}
+
+float distanceVector3(Vector3 a, Vector3 b)
+{
+    return sqrtf(powf(a.y - b.y, 2) + powf(a.x - b.x, 2) + powf(a.z - b.z, 2));
+}
+
+Vector3 toVector3(Vector2 vector)
+{
+    return (Vector3){0, vector.x, vector.y};
+}
+
+Vector2 toVector2(Vector3 vector)
+{
+    return (Vector2){vector.z, vector.x};
+}

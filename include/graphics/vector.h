@@ -19,6 +19,10 @@ Vector3 crossProduct(Vector3 a, Vector3 b);
 float dotVector2(Vector2 a, Vector2 b);
 float dotVector3(Vector3 a, Vector3 b);
 Vector3 calculateDirection(Rotation rotation);
+float distanceVector2(Vector2 a, Vector2 b);
+float distanceVector3(Vector3 a, Vector3 b);
+Vector3 toVector3(Vector2 vector);
+Vector2 toVector2(Vector3 vector);
 #define vectorLength(v) _Generic((v), Vector2: vector2Length, Vector3: vector3Length)(v);
 #define normalize(v) _Generic((v), Vector2: normalizeVector2, Vector3: normalizeVector3)(v);
 #define addVector(a, b) _Generic((a), Vector2: addVector2, Vector3: addVector3)((a), (b))
@@ -27,5 +31,6 @@ Vector3 calculateDirection(Rotation rotation);
 #define multiplyVectorByFloat(v, scalar)                                                                               \
     _Generic((v), Vector2: multiplyVector2ByFloat, Vector3: multiplyVector3ByFloat)((v), (scalar))
 #define dot(a, b) _Generic((v), Vector2: dotVector2, Vector3: dotVector3)((a), (b))
+#define distance(a, b) _Generic((a), Vector2: distanceVector2, Vector3: distanceVector3)((a), (b))
 
 #endif // VECTOR_H

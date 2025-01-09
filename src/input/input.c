@@ -7,9 +7,11 @@
 #include <types.h>
 
 Vector3 velocity = {0, 0, 0};
-float speed = 0.05f;
+float speed = 0.02f;
 float maxSpeed = 0.05f;
 float drag = 50.0f;
+float rotationSpeed = 80.0f; // Speed of rotation
+float targetYaw = 0.0f;      // Target yaw for smooth rotation
 
 void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 {
@@ -23,11 +25,9 @@ void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 
 bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
 {
-    // int currentChunkIndex = geometry.currentChunkZ * geometry.chunkCountRow + geometry.currentChunkX;
     Vector3 normalizedVelocity = normalize(velocity);
     Ray r = {camera.position, normalizedVelocity};
     float distance = 0.5f;
-    // TODO: OPTIMIZE
     for (int dx = -camera.renderDistance; dx <= camera.renderDistance; dx++)
     {
         for (int dz = -camera.renderDistance; dz <= camera.renderDistance; dz++)
@@ -35,13 +35,11 @@ bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
             int chunkX = geometry.currentChunkX + dx;
             int chunkZ = geometry.currentChunkZ + dz;
 
-            // Check bounds to ensure valid chunk indices
             if (chunkX < 0 || chunkX >= geometry.chunkCountRow || chunkZ < 0 || chunkZ >= geometry.chunkCountRow)
             {
                 continue;
             }
 
-            // Calculate the corresponding chunk index in the linear array
             int chunkIndex = chunkZ * geometry.chunkCountRow + chunkX;
             for (int i = 0; i < geometry.chunkSizeData[chunkIndex]; i++)
             {
@@ -57,11 +55,7 @@ bool canGoThrough(Camera camera, Vector3 velocity, GeometryData geometry)
             }
         }
     }
-    if (distance > 0.1f)
-    {
-        return true;
-    }
-    return false;
+    return distance > 0.1f;
 }
 
 void handleInput(int input, Camera *camera, GeometryData geometry, double deltaTime)
@@ -95,13 +89,44 @@ void handleInput(int input, Camera *camera, GeometryData geometry, double deltaT
                     velocity = subtractVector(velocity, multiplyVectorByFloat(right, speed));
                 break;
             case KEY_LEFT:
-                camera->rotation.yaw += M_PI / 4;
+                targetYaw += M_PI / 2.0f;
                 break;
             case KEY_RIGHT:
-                camera->rotation.yaw -= M_PI / 4;
+                targetYaw -= M_PI / 2.0f;
                 break;
         }
     }
+
+    // Apply smooth interpolation towards the target yaw
+    float yawDifference = targetYaw - camera->rotation.yaw;
+    if (yawDifference > M_PI)
+    {
+        targetYaw -= 2 * M_PI; // Wrap target yaw if it exceeds 180 degrees
+    }
+    else if (yawDifference < -M_PI)
+    {
+        targetYaw += 2 * M_PI; // Wrap target yaw if it's less than -180 degrees
+    }
+
+    // Smoothly rotate towards the target yaw
+    float rotationSpeedFactor = rotationSpeed * deltaTime;
+    if (fabs(yawDifference) > rotationSpeedFactor)
+    {
+        if (yawDifference > 0)
+        {
+            camera->rotation.yaw += rotationSpeedFactor; // Rotate right towards target
+        }
+        else
+        {
+            camera->rotation.yaw -= rotationSpeedFactor; // Rotate left towards target
+        }
+    }
+    else
+    {
+        camera->rotation.yaw = targetYaw; // Snap to target if close enough
+    }
+
+    // Apply movement
     if (!canGoThrough(*camera, velocity, geometry))
     {
         velocity = (Vector3){0, 0, 0};

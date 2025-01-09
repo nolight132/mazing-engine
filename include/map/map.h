@@ -4,11 +4,6 @@
 #include <stdbool.h>
 #include <types.h>
 
-
-int **generateMaze(int d);
-void generatePath(int **map, int d);
-Vector2 *getValidDirs(Vector2 pos, bool **visitedTiles, int d, int *validCount);
-Vector2 getRandDir(Vector2 dirs[], int count);
-void generateBranches(int **map, Vector2 pos, bool **visitedTiles, int d, Vector2 *path, int pathIndex);
+Map generateMaze(int d);
 
 #endif // MAP_H

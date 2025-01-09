@@ -13,12 +13,12 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
     int col2Start = 28;
     mvprintw(0, col1End, " -- DEBUG -------------------- --------------------------");
     mvprintw(1, col2End, "| Res: %dx%d", screen.width, screen.height);
-    mvprintw(1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size);
+    mvprintw(1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size / geometry.defaultChunkSize);
     mvprintw(2, col2End, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
     mvprintw(2, col1End, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
     mvprintw(3, col2End, "| %d FPS (%d max)", currentFps, screen.fps);
     mvprintw(3, col1End, "| frameTime: %.2f ms", frameTimeF);
-    mvprintw(0, 0, " -- CONTROLS ---------------");
+    mvprintw(0, 0, " -- INFO -------------------");
     mvprintw(1, 0, "| WASD - movement");
     mvprintw(2, 0, "| Arrow keys - camera");
     mvprintw(3, 0, "|");
@@ -42,6 +42,9 @@ void printTile(int type)
             break;
         case GOAL:
             printf("GG");
+            break;
+        case START:
+            printf("SS");
             break;
     }
 }

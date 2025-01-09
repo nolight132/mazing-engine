@@ -1,40 +1,65 @@
+#include "ui/levelInfo.h"
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
+#include <graphics/raycast.h>
 #include <graphics/screen.h>
 #include <graphics/vector.h>
 #include <input/input.h>
 #include <map/map.h>
+#include <math.h>
 #include <memory/memoryManagement.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <types.h>
 #include <ui/debug.h>
 #include <unistd.h>
 
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, GeometryData *geometry, int input, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geometry, int input, double deltaTime)
 {
     updateGeometry(geometry, *camera);
     drawCall(*screen, *camera, *geometry);
     handleInput(input, camera, *geometry, deltaTime);
+    updateUi(*screen, *camera, *mapData, deltaTime);
 }
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-int size = 12;
+int size = 32;
 
-int main()
+int main(int argc, char *argv[])
 {
+    int c;
+    int refreshRate = 65;
+    while ((c = getopt(argc, argv, "vu")) != -1)
+    {
+        switch (c)
+        {
+            case 'v':
+                refreshRate = getRefreshRate();
+                break;
+            case 'u':
+                refreshRate = 999999;
+                break;
+            default:
+                break;
+        }
+    }
     srand(time(NULL));
 
     int chunkSize = 4;
     if (size % chunkSize != 0)
         size += chunkSize - (size % chunkSize);
 
-    int **maze = generateMaze(size);
+    Map mapData = generateMaze(size);
+
+    int **maze = mapData.map;
+    Vector2 start = mapData.start;
+    Vector3 startWorld = (Vector3){1.0f, start.x + 0.5f, start.y + 0.5f};
 
     // Debug print
     printMap(maze, size);
@@ -48,8 +73,8 @@ int main()
     int renderDistance = 1; // Optimal value is 1, adjustable for debugging
     int fov = 50;
     initDraw();
-    initScreen(&screen, COLS, LINES, 60);
-    initCamera(&camera, fov, renderDistance, (Vector3){1.0f, 2.5f, 2.5f}, (Rotation){0.0f, 0.0f});
+    initScreen(&screen, COLS, LINES, refreshRate);
+    initCamera(&camera, fov, renderDistance, startWorld, (Rotation){0.0f, 0.0f});
 
     double frameDuration = 1e9 / (float)screen.fps;
     long long frameTime = frameDuration;
@@ -63,7 +88,7 @@ int main()
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, &geometry, ch, frameTime / 1e9f);
+        deltaUpdate(&screen, &camera, &mapData, &geometry, ch, frameTime / 1e9f);
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
