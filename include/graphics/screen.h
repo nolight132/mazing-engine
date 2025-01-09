@@ -5,12 +5,12 @@ typedef struct Screen
 {
     int width;
     int height;
-    int fps;
+    int refreshRate;
 
     void (*init)(struct Screen *, int, int, int);
 } Screen;
 
-void initScreen(Screen *screen, int width, int height, int fps);
+void initScreen(Screen *screen, int width, int height, int refreshRate);
 int getRefreshRate();
 
 #endif // SCREEN_H

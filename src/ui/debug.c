@@ -16,7 +16,7 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
     mvprintw(1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size / geometry.defaultChunkSize);
     mvprintw(2, col2End, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
     mvprintw(2, col1End, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
-    mvprintw(3, col2End, "| %d FPS (%d max)", currentFps, screen.fps);
+    mvprintw(3, col2End, "| %d FPS (%d max)", currentFps, screen.refreshRate);
     mvprintw(3, col1End, "| frameTime: %.2f ms", frameTimeF);
     mvprintw(0, 0, " -- INFO -------------------");
     mvprintw(1, 0, "| WASD - movement");

@@ -7,11 +7,11 @@
 #include <types.h>
 
 Vector3 velocity = {0, 0, 0};
-float speed = 0.02f;
-float maxSpeed = 0.05f;
-float drag = 50.0f;
-float rotationSpeed = 80.0f; // Speed of rotation
-float targetYaw = 0.0f;      // Target yaw for smooth rotation
+float speed = 0.045f;
+float maxSpeed = 0.055f;
+float drag = 120.0f;
+float rotationSpeed = 100.0f;
+float targetYaw = 0.0f;
 
 void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)
 {
@@ -88,10 +88,10 @@ void handleInput(int input, Camera *camera, GeometryData geometry, double deltaT
                 if (vLength < maxSpeed)
                     velocity = subtractVector(velocity, multiplyVectorByFloat(right, speed));
                 break;
-            case KEY_LEFT:
+            case KEY_LEFT: // Look left
                 targetYaw += M_PI / 2.0f;
                 break;
-            case KEY_RIGHT:
+            case KEY_RIGHT: // Look right
                 targetYaw -= M_PI / 2.0f;
                 break;
         }

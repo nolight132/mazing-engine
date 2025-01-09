@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
     Map mapData = generateMaze(size);
 
     int **maze = mapData.map;
-    Vector2 start = mapData.start;
-    Vector3 startWorld = (Vector3){1.0f, start.x + 0.5f, start.y + 0.5f};
+    Vector2 startPos = mapData.start;
+    Vector3 startWorld = (Vector3){3.0f, startPos.x + 0.5f, startPos.y + 0.5f};
 
     // Debug print
     printMap(maze, size);
@@ -74,15 +74,14 @@ int main(int argc, char *argv[])
     initScreen(&screen, COLS, LINES, refreshRate);
     initCamera(&camera, fov, renderDistance, startWorld, (Rotation){0.0f, 0.0f});
 
-    double frameDuration = 1e9 / (float)screen.fps;
+    double frameDuration = 1e9 / (float)screen.refreshRate;
     long long frameTime = frameDuration;
     long long sleepTime = 0;
+    struct timespec start, end;
 
     int ch;
     while ((ch = getch()) != 'q')
     { // Quit on 'q'
-        clear();
-        struct timespec start, end;
         // Record the start time of the frame
         clock_gettime(CLOCK_MONOTONIC, &start);
         // Divide by 1e9 to convert nanoseconds to seconds
@@ -90,13 +89,13 @@ int main(int argc, char *argv[])
         // Calculate how long we need to sleep to maintain FPS
         clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
         frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
-        sleepTime = (frameDuration - frameTime);
+        sleepTime = frameDuration - frameTime;
         if (sleepTime > 0)
         {
-            struct timespec ts;
-            ts.tv_sec = sleepTime / 1e9;       // Convert nanoseconds to seconds
-            ts.tv_nsec = sleepTime % (int)1e9; // Remainder as nanoseconds
-            nanosleep(&ts, NULL);              // Sleep for the remaining time
+            struct timespec sleep;
+            sleep.tv_sec = sleepTime / 1e9;       // Convert nanoseconds to seconds
+            sleep.tv_nsec = sleepTime % (int)1e9; // Remainder as nanoseconds
+            nanosleep(&sleep, NULL);              // Sleep for the remaining time
         }
         printDebugInfo(screen, camera, geometry, size, frameTime, sleepTime);
         refresh();
