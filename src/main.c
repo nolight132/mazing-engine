@@ -2,12 +2,10 @@
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
-#include <graphics/raycast.h>
 #include <graphics/screen.h>
 #include <graphics/vector.h>
 #include <input/input.h>
 #include <map/map.h>
-#include <math.h>
 #include <memory/memoryManagement.h>
 #include <ncurses.h>
 #include <stdio.h>
