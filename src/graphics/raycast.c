@@ -1,9 +1,41 @@
+#include <OpenCL/opencl.h>
+#include <float.h>
 #include <graphics/camera.h>
 #include <graphics/screen.h>
 #include <graphics/vector.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <types.h>
+
+// Function to load OpenCL kernel source from a file
+const char *loadKernelSource(const char *fileName)
+{
+    FILE *file = fopen(fileName, "r");
+    if (!file)
+    {
+        fprintf(stderr, "Failed to load kernel file: %s\n", fileName);
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(file, 0, SEEK_END);
+    size_t fileSize = ftell(file);
+    rewind(file);
+
+    char *source = (char *)malloc(fileSize + 1);
+    if (!source)
+    {
+        fprintf(stderr, "Failed to allocate memory for kernel source.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fread(source, 1, fileSize, file);
+    source[fileSize] = '\0'; // Null-terminate the string
+    fclose(file);
+
+    return source;
+}
 
 float raycast(Ray ray, AABB box)
 {
@@ -67,38 +99,72 @@ Ray computeRay(Camera camera, Screen screen, int pixelRow, int pixelCol)
 
 float renderCall(GeometryData geometry, Camera camera, Screen screen, int pixelRow, int pixelCol)
 {
-    float tmin = INFINITY;
-    Ray ray = computeRay(camera, screen, pixelRow, pixelCol);
-    float t;
+    // OpenCL setup
+    cl_platform_id platform;
+    cl_device_id device;
+    cl_context context;
+    cl_command_queue queue;
+    cl_program program;
+    cl_kernel computeRayKernel, raycastKernel;
+    cl_int err;
 
-    // Iterate over adjacent chunks (current + neighbors)
-    for (int dx = -camera.renderDistance; dx <= camera.renderDistance; dx++)
+    // Initialize OpenCL
+    clGetPlatformIDs(1, &platform, NULL);
+    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
+    context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
+    queue = clCreateCommandQueueWithPropertiesAPPLE(context, device, 0, &err);
+
+    // Load and build kernels
+    const char *kernelSource =
+        loadKernelSource("/Users/pavelolizko/Documents/Code/mazing-engine/src/graphics/kernels.cl");
+    program = clCreateProgramWithSource(context, 1, &kernelSource, NULL, &err);
+    clBuildProgram(program, 1, &device, NULL, NULL, NULL);
+    computeRayKernel = clCreateKernel(program, "computeRayKernel", &err);
+    raycastKernel = clCreateKernel(program, "raycastKernel", &err);
+
+    // Buffers
+    size_t pixelCount = screen.width * screen.height;
+    cl_mem cameraBuffer =
+        clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(Camera), &camera, &err);
+    cl_mem geometryBuffer =
+        clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(GeometryData), &geometry, &err);
+    cl_mem resultBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * pixelCount, NULL, &err);
+
+    // Set arguments for raycasting kernel
+    clSetKernelArg(raycastKernel, 0, sizeof(cl_mem), &geometryBuffer);
+    clSetKernelArg(raycastKernel, 1, sizeof(cl_mem), &cameraBuffer);
+    clSetKernelArg(raycastKernel, 2, sizeof(cl_mem), &resultBuffer);
+    clSetKernelArg(raycastKernel, 3, sizeof(int), &pixelRow);
+    clSetKernelArg(raycastKernel, 4, sizeof(int), &pixelCol);
+
+    // Execute raycasting kernel
+    size_t globalWorkSize = geometry.chunkCountRow * geometry.chunkCountRow;
+    clEnqueueNDRangeKernel(queue, raycastKernel, 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+
+    // Retrieve results
+    float *results = (float *)malloc(sizeof(float) * pixelCount);
+    clEnqueueReadBuffer(queue, resultBuffer, CL_TRUE, 0, sizeof(float) * pixelCount, results, 0, NULL, NULL);
+
+    // Find the minimum t value for this pixel
+    float tmin = FLT_MAX;
+    for (size_t i = 0; i < pixelCount; i++)
     {
-        for (int dz = -camera.renderDistance; dz <= camera.renderDistance; dz++)
+        if (results[i] < tmin && results[i] >= 0)
         {
-            int chunkX = geometry.currentChunkX + dx;
-            int chunkZ = geometry.currentChunkZ + dz;
-
-            // Check bounds to ensure valid chunk indices
-            if (chunkX < 0 || chunkX >= geometry.chunkCountRow || chunkZ < 0 || chunkZ >= geometry.chunkCountRow)
-            {
-                continue;
-            }
-
-            // Calculate the corresponding chunk index in the linear array
-            int chunkIndex = chunkZ * geometry.chunkCountRow + chunkX;
-
-            // Iterate through the objects in this chunk
-            for (int j = 0; j < geometry.chunkSizeData[chunkIndex]; j++)
-            {
-                t = raycast(ray, geometry.aabbs[chunkIndex][j]);
-                if (t <= tmin && t >= 0)
-                {
-                    tmin = t;
-                }
-            }
+            tmin = results[i];
         }
     }
 
-    return tmin == INFINITY ? -1 : tmin;
+    // Cleanup
+    clReleaseMemObject(cameraBuffer);
+    clReleaseMemObject(geometryBuffer);
+    clReleaseMemObject(resultBuffer);
+    clReleaseKernel(computeRayKernel);
+    clReleaseKernel(raycastKernel);
+    clReleaseProgram(program);
+    clReleaseCommandQueue(queue);
+    clReleaseContext(context);
+    free(results);
+
+    return (tmin == FLT_MAX) ? -1.0f : tmin;
 }

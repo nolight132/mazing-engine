@@ -1,4 +1,5 @@
 #include "ui/levelInfo.h"
+#include <GLFW/glfw3.h>
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
@@ -32,7 +33,7 @@ int size = 32;
 int main(int argc, char *argv[])
 {
     int c;
-    int refreshRate = 65;
+    int refreshRate = 70;
     while ((c = getopt(argc, argv, "vu")) != -1)
     {
         switch (c)
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
 
     int **maze = mapData.map;
     Vector2 startPos = mapData.start;
-    Vector3 startWorld = (Vector3){3.0f, startPos.x + 0.5f, startPos.y + 0.5f};
+    Vector3 startWorld = (Vector3){1.0f, startPos.x + 0.5f, startPos.y + 0.5f};
 
     // Debug print
     printMap(maze, size);
@@ -101,6 +102,6 @@ int main(int argc, char *argv[])
         refresh();
     }
     endwin();
-
+    glfwTerminate();
     return 0;
 }
