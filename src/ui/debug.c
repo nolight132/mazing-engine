@@ -1,6 +1,75 @@
 #include <graphics/camera.h>
 #include <graphics/screen.h>
 #include <ncurses.h>
+#include <stdlib.h>
+#include <time.h>
+
+FILE *logFile;
+
+int logWrite(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    int result = vfprintf(logFile, format, args);
+    va_end(args);
+    return result;
+}
+
+int timedLogWrite(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    time_t timeraw = time(NULL);
+    struct tm *t = localtime(&timeraw);
+
+    char timeStr[300];
+    snprintf(timeStr, sizeof(timeStr), "[%04d-%02d-%02d %02d:%02d:%02d]", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+             t->tm_hour, t->tm_min, t->tm_sec);
+
+    int result = logWrite("%s ", timeStr);     // Log the timestamp
+    result += vfprintf(logFile, format, args); // Write the log message
+
+    va_end(args);
+    return result;
+}
+
+int errorLogWrite(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    int result = logWrite("ERROR: ");
+    result += vfprintf(logFile, format, args);
+    va_end(args);
+    return result;
+}
+
+int initLog(FILE *file)
+{
+    logFile = malloc(sizeof(char) * 50);
+    logFile = file;
+    logWrite("----LOG----");
+    return 0;
+}
+
+FILE *createLog(char *logFileName)
+{
+    time_t timeraw = time(NULL);
+    struct tm *t = localtime(&timeraw);
+
+    // Format the file name
+    strftime(logFileName, 50, "./%Y-%m-%d_%H-%M-%S.log", t);
+    printf("%s", logFileName);
+
+    FILE *logFile = fopen("latest.log", "a");
+    if (logFile == NULL)
+    {
+        perror("Failed to open log file");
+        free(logFileName);
+        return NULL;
+    }
+    return logFile;
+}
 
 void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
                     long long sleepTime)
@@ -32,19 +101,19 @@ void printTile(int type)
     switch (type)
     {
         case PATH:
-            printf("  ");
+            logWrite("  ");
             break;
         case WALL:
-            printf("░░");
+            logWrite("░░");
             break;
         case BORDER:
-            printf("██");
+            logWrite("██");
             break;
         case GOAL:
-            printf("GG");
+            logWrite("GG");
             break;
         case START:
-            printf("SS");
+            logWrite("SS");
             break;
     }
 }
@@ -55,7 +124,7 @@ void printMap(int **map, int size)
     {
         printTile(BORDER);
     }
-    printf("\n");
+    logWrite("\n");
     for (int y = 0; y < size; y++)
     {
         printTile(BORDER);
@@ -64,11 +133,11 @@ void printMap(int **map, int size)
             printTile(map[y][x]);
         }
         printTile(BORDER);
-        printf("\n");
+        logWrite("\n");
     }
     for (int x = 0; x < size + 2; x++)
     {
         printTile(BORDER);
     }
-    printf("\n");
+    logWrite("\n");
 }

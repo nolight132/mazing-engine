@@ -1,4 +1,3 @@
-#include "ui/levelInfo.h"
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
@@ -14,6 +13,7 @@
 #include <time.h>
 #include <types.h>
 #include <ui/debug.h>
+#include <ui/levelInfo.h>
 #include <unistd.h>
 
 // Update loop adjusted for delta time. Called every frame.
@@ -23,16 +23,17 @@ void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geo
     drawCall(*screen, *camera, *geometry);
     handleInput(input, camera, *geometry, deltaTime);
     updateUi(*screen, *camera, *mapData, deltaTime);
+    timedLogWrite("Frame updated\n");
 }
 
 // Not using #define here to enable the user
 // to change the size of the maze later
-int size = 32;
+int size = 16;
 
 int main(int argc, char *argv[])
 {
+    int refreshRate = 70;
     int c;
-    int refreshRate = 65;
     while ((c = getopt(argc, argv, "vu")) != -1)
     {
         switch (c)
@@ -47,6 +48,11 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+
+    char *logFileName = malloc(sizeof(char) * 50);
+    FILE *logFile = createLog(logFileName);
+    initLog(logFile);
+
     srand(time(NULL));
 
     int chunkSize = 4;
@@ -57,7 +63,7 @@ int main(int argc, char *argv[])
 
     int **maze = mapData.map;
     Vector2 startPos = mapData.start;
-    Vector3 startWorld = (Vector3){3.0f, startPos.x + 0.5f, startPos.y + 0.5f};
+    Vector3 startWorld = (Vector3){1.0f, startPos.x + 0.5f, startPos.y + 0.5f};
 
     // Debug print
     printMap(maze, size);
@@ -102,5 +108,8 @@ int main(int argc, char *argv[])
     }
     endwin();
 
+    rename("latest.log", logFileName);
+    fclose(logFile);
+    free(logFileName);
     return 0;
 }

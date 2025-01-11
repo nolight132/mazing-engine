@@ -5,11 +5,12 @@
 #include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
+#include <ui/debug.h>
 
 void initDraw()
 {
     // Initialize ncurses
-    printf("Initializing ncurses...\n");
+    logWrite("Initializing ncurses...\n");
     setlocale(LC_ALL, "");
     initscr();
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
