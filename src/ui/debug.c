@@ -1,10 +1,46 @@
+#include <errno.h>
 #include <graphics/camera.h>
 #include <graphics/screen.h>
 #include <ncurses.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 #include <time.h>
 
 FILE *logFile;
+
+int createDir(const char *dir)
+{
+    if (mkdir(dir, 0755) == -1)
+    {
+        if (errno != EEXIST)
+        {
+            perror("mkdir failed");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int createDirsForFile(const char *filePath)
+{
+    char path[256];
+    strncpy(path, filePath, sizeof(path));
+
+    for (char *p = path + 1; *p; p++)
+    {
+        if (*p == '/')
+        {
+            *p = '\0';
+            if (createDir(path) == -1)
+            {
+                return -1;
+            }
+            *p = '/';
+        }
+    }
+    return 0;
+}
 
 int logWrite(const char *format, ...)
 {
@@ -15,7 +51,7 @@ int logWrite(const char *format, ...)
     return result;
 }
 
-int timedLogWrite(const char *format, ...)
+int consoleLog(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -34,7 +70,7 @@ int timedLogWrite(const char *format, ...)
     return result;
 }
 
-int errorLogWrite(const char *format, ...)
+int errorLog(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -46,35 +82,61 @@ int errorLogWrite(const char *format, ...)
 
 int initLog(FILE *file)
 {
-    logFile = malloc(sizeof(char) * 50);
     logFile = file;
-    logWrite("----LOG----");
+    logWrite("----LOG----\n");
     return 0;
 }
 
-FILE *createLog(char *logFileName)
+FILE *createLog(char *logFileName, char *latestLogFilePath)
 {
+    char logDir[512];
+#ifdef _WIN32
+    char appDataDir[MAX_PATH];
+    if (GetEnvironmentVariable("APPDATA", appDataDir, MAX_PATH) == 0)
+    {
+        perror("Failed to get environment variable.\n");
+        exit(1);
+    }
+    sprintf(logDir, "%s\\MazingEngine", appDataDir);
+#elif __unix__ || __APPLE__
+    const char *homeDir = getenv("HOME");
+    if (homeDir != NULL)
+    {
+#ifdef __APPLE__
+        sprintf(logDir, "%s/Library/Application Support/MazingEngine/logs", homeDir);
+#else
+        sprintf(logDir, "%s/.config/MazingEngine", homeDir);
+#endif
+    }
+    else
+    {
+        perror("Failed to get HOME environment variable.\n");
+        exit(1);
+    }
+#endif
     time_t timeraw = time(NULL);
     struct tm *t = localtime(&timeraw);
 
     // Format the file name
-    strftime(logFileName, 50, "./%Y-%m-%d_%H-%M-%S.log", t);
-    printf("%s", logFileName);
+    char logTime[64];
+    strftime(logTime, sizeof(logTime), "%Y-%m-%d_%H-%M-%S.log", t);
+    sprintf(logFileName, "%s/%s", logDir, logTime);
 
-    FILE *logFile = fopen("latest.log", "a");
-    if (logFile == NULL)
+    sprintf(latestLogFilePath, "%s/latest.log", logDir);
+    createDirsForFile(latestLogFilePath);
+
+    FILE *latestLogFile = fopen(latestLogFilePath, "a");
+    if (latestLogFile == NULL)
     {
-        perror("Failed to open log file");
-        free(logFileName);
+        fprintf(stderr, "Failed to open log file %s\n", latestLogFilePath);
         return NULL;
     }
-    return logFile;
+    return latestLogFile;
 }
 
 void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
                     long long sleepTime)
 {
-    // Calculate and display FPS
     int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
     float frameTimeF = (float)frameTime / 1e6;
     int col1End = screen.width - 58;

@@ -23,7 +23,7 @@ void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geo
     drawCall(*screen, *camera, *geometry);
     handleInput(input, camera, *geometry, deltaTime);
     updateUi(*screen, *camera, *mapData, deltaTime);
-    timedLogWrite("Frame updated\n");
+    consoleLog("Frame updated\n");
 }
 
 // Not using #define here to enable the user
@@ -49,8 +49,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    char *logFileName = malloc(sizeof(char) * 50);
-    FILE *logFile = createLog(logFileName);
+    char *logFilePath = malloc(sizeof(char) * 512);
+    char *latestLogFilePath = malloc(sizeof(char) * 512);
+    FILE *logFile = createLog(logFilePath, latestLogFilePath);
     initLog(logFile);
 
     srand(time(NULL));
@@ -108,8 +109,7 @@ int main(int argc, char *argv[])
     }
     endwin();
 
-    rename("latest.log", logFileName);
+    rename(latestLogFilePath, logFilePath);
     fclose(logFile);
-    free(logFileName);
     return 0;
 }

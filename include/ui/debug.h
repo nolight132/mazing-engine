@@ -10,8 +10,9 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
 void printMap(int **map, int size);
 void printTile(int type);
 int logWrite(char *fmt, ...);
-int timedLogWrite(char *message);
+int consoleLog(char *message);
+int errorLog(char *message);
 int initLog(FILE *file);
-FILE *createLog(char *logFileName);
+FILE *createLog(char *logFilePath, char *latestLogFilePath);
 
 #endif // DEBUG_H
