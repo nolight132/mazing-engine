@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <graphics/camera.h>
 #include <graphics/screen.h>
+#include <graphics/vector.h>
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
@@ -156,6 +157,9 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
     mvprintw(1, col2Start, "|");
     mvprintw(2, col2Start, "|");
     mvprintw(3, col2Start, "|");
+
+    Vector2 playerPos = toVector2(camera.position);
+    consoleLog("PlayerPos: %f %f\n", playerPos.y, playerPos.x);
 }
 
 void printTile(int type)
@@ -177,11 +181,15 @@ void printTile(int type)
         case START:
             logWrite("SS");
             break;
+        case PLAYER:
+            logWrite("PP");
+            break;
     }
 }
 
-void printMap(int **map, int size)
+void printMap(int **map, int size, Vector2 playerPos)
 {
+    map[(int)playerPos.y][(int)playerPos.x] = PLAYER;
     for (int x = 0; x < size + 2; x++)
     {
         printTile(BORDER);

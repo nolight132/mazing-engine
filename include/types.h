@@ -7,7 +7,8 @@ enum TileType
     PATH,
     BORDER,
     GOAL,
-    START
+    START,
+    PLAYER
 };
 
 typedef struct

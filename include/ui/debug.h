@@ -7,7 +7,7 @@
 
 void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
                     long long sleepTime);
-void printMap(int **map, int size);
+void printMap(int **map, int size, Vector2 playerPos);
 void printTile(int type);
 int logWrite(char *fmt, ...);
 int consoleLog(char *message);

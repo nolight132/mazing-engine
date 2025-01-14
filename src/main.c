@@ -23,7 +23,8 @@ void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geo
     drawCall(*screen, *camera, *geometry);
     handleInput(input, camera, *geometry, deltaTime);
     updateUi(*screen, *camera, *mapData, deltaTime);
-    consoleLog("Frame updated\n");
+    Vector2 playerPos = toVector2(camera->position);
+    printMap(mapData->map, mapData->size, playerPos);
 }
 
 // Not using #define here to enable the user
@@ -65,9 +66,6 @@ int main(int argc, char *argv[])
     int **maze = mapData.map;
     Vector2 startPos = mapData.start;
     Vector3 startWorld = (Vector3){1.0f, startPos.x + 0.5f, startPos.y + 0.5f};
-
-    // Debug print
-    printMap(maze, size);
 
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
