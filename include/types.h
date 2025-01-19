@@ -1,15 +1,23 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-enum TileType
+typedef enum
 {
     WALL,
     PATH,
     BORDER,
     GOAL,
     START,
-    PLAYER
-};
+    PLAYER,
+} TileType;
+
+typedef enum
+{
+    SCENE_TITLE,
+    SCENE_LEVEL,
+    SCENE_VICTORY,
+    SCENE_LEADERBOARD,
+} Scene;
 
 typedef struct
 {

@@ -1,26 +1,14 @@
-#ifndef SCREEN_H
-#define SCREEN_H
-
 #include <GLFW/glfw3.h>
 #include <graphics/camera.h>
+#include <graphics/screen.h>
 #include <stdio.h>
 
-typedef struct Screen
-{
-    int width;
-    int height;
-    int fps;
-
-    // Function pointers
-    void (*init)(struct Screen *, int, int, int);
-} Screen;
-
-void initScreen(Screen *screen, int width, int height, int fps)
+void initScreen(Screen *screen, int width, int height, int refreshRate)
 {
     printf("Initializing screen...\n");
     screen->width = width;
     screen->height = height;
-    screen->fps = fps;
+    screen->refreshRate = refreshRate;
     screen->init = initScreen;
 }
 
@@ -52,5 +40,3 @@ int getRefreshRate()
     // Terminate GLFW
     glfwTerminate();
 }
-
-#endif // SCREEN_H

@@ -5,7 +5,7 @@
 #include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
-#include <ui/debug.h>
+#include <utils.h>
 
 void initDraw()
 {
@@ -15,7 +15,6 @@ void initDraw()
     initscr();
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
     timeout(-1);
-    printf("\033[?1003h\n"); // Enable mouse motion events in terminal
     fflush(stdout);
     cbreak();              // Disable line buffering
     noecho();              // Disable echoing of typed characters

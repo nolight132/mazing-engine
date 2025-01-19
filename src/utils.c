@@ -48,6 +48,7 @@ int logWrite(const char *format, ...)
     va_list args;
     va_start(args, format);
     int result = vfprintf(logFile, format, args);
+    fflush(logFile);
     va_end(args);
     return result;
 }
@@ -135,8 +136,8 @@ FILE *createLog(char *logFileName, char *latestLogFilePath)
     return latestLogFile;
 }
 
-void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
-                    long long sleepTime)
+void drawDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
+                   long long sleepTime)
 {
     int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
     float frameTimeF = (float)frameTime / 1e6;
@@ -157,9 +158,6 @@ void printDebugInfo(Screen screen, Camera camera, GeometryData geometry, int siz
     mvprintw(1, col2Start, "|");
     mvprintw(2, col2Start, "|");
     mvprintw(3, col2Start, "|");
-
-    Vector2 playerPos = toVector2(camera.position);
-    consoleLog("PlayerPos: %f %f\n", playerPos.y, playerPos.x);
 }
 
 void printTile(int type)
@@ -189,7 +187,13 @@ void printTile(int type)
 
 void printMap(int **map, int size, Vector2 playerPos)
 {
-    map[(int)playerPos.y][(int)playerPos.x] = PLAYER;
+    int **tempMap = malloc(size * sizeof(int *));
+    for (int i = 0; i < size; i++)
+    {
+        tempMap[i] = malloc(size * sizeof(int));
+        memcpy(tempMap[i], map[i], size * sizeof(int));
+    }
+    tempMap[(int)playerPos.y][(int)playerPos.x] = PLAYER;
     for (int x = 0; x < size + 2; x++)
     {
         printTile(BORDER);
@@ -200,7 +204,7 @@ void printMap(int **map, int size, Vector2 playerPos)
         printTile(BORDER);
         for (int x = 0; x < size; x++)
         {
-            printTile(map[y][x]);
+            printTile(tempMap[y][x]);
         }
         printTile(BORDER);
         logWrite("\n");

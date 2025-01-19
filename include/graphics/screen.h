@@ -7,6 +7,7 @@ typedef struct Screen
     int height;
     int refreshRate;
 
+    // Function pointers
     void (*init)(struct Screen *, int, int, int);
 } Screen;
 

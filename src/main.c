@@ -12,9 +12,9 @@
 #include <string.h>
 #include <time.h>
 #include <types.h>
-#include <ui/debug.h>
 #include <ui/levelInfo.h>
 #include <unistd.h>
+#include <utils.h>
 
 // Update loop adjusted for delta time. Called every frame.
 void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geometry, int input, double deltaTime)
@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
 
     GeometryData geometry = {0};
     initGeometry(&geometry, chunkSize, maze, size);
-    free2DArray((void **)maze, size);
 
     Screen screen = {0};
     Camera camera = {0};
@@ -102,12 +101,11 @@ int main(int argc, char *argv[])
             sleep.tv_nsec = sleepTime % (int)1e9; // Remainder as nanoseconds
             nanosleep(&sleep, NULL);              // Sleep for the remaining time
         }
-        printDebugInfo(screen, camera, geometry, size, frameTime, sleepTime);
+        drawDebugInfo(screen, camera, geometry, size, frameTime, sleepTime);
         refresh();
     }
     endwin();
 
     rename(latestLogFilePath, logFilePath);
     fclose(logFile);
-    return 0;
 }
