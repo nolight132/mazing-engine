@@ -7,10 +7,10 @@
 #include <types.h>
 
 Vector3 velocity = {0, 0, 0};
-float speed = 0.045f;
-float maxSpeed = 0.055f;
-float drag = 120.0f;
-float rotationSpeed = 100.0f;
+float speed = 0.010f;
+float maxSpeed = 0.015f;
+float drag = 7.0f;
+float rotationSpeed = 20.0f;
 float targetYaw = 0.0f;
 
 void applyMovementDrag(Vector3 *acceleration, float drag, float deltaTime)

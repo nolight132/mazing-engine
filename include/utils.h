@@ -3,10 +3,11 @@
 
 #include <graphics/camera.h>
 #include <graphics/screen.h>
+#include <ncurses.h>
 #include <stdio.h>
 
-void drawDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
-                   long long sleepTime);
+void drawDebugInfo(WINDOW *win, Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
+                   long long sleepTime, double totalPlayTime);
 void printMap(int **map, int size, Vector2 playerPos);
 void printTile(int type);
 int logWrite(char *fmt, ...);

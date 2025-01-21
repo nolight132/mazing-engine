@@ -11,14 +11,6 @@ typedef enum
     PLAYER,
 } TileType;
 
-typedef enum
-{
-    SCENE_TITLE,
-    SCENE_LEVEL,
-    SCENE_VICTORY,
-    SCENE_LEADERBOARD,
-} Scene;
-
 typedef struct
 {
     float y;

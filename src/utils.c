@@ -136,28 +136,33 @@ FILE *createLog(char *logFileName, char *latestLogFilePath)
     return latestLogFile;
 }
 
-void drawDebugInfo(Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
-                   long long sleepTime)
+void drawDebugInfo(WINDOW *win, Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
+                   long long sleepTime, double totalPlayTime)
 {
+    int winHeight, winWidth;
+    getmaxyx(win, winHeight, winWidth);
+
     int currentFps = 1e9 / (frameTime + (sleepTime > 0 ? sleepTime : 0));
     float frameTimeF = (float)frameTime / 1e6;
-    int col1End = screen.width - 58;
-    int col2End = screen.width - 28;
+    int col1End = winWidth - 58;
+    int col2End = winWidth - 28;
     int col2Start = 28;
-    mvprintw(0, col1End, " -- DEBUG -------------------- --------------------------");
-    mvprintw(1, col2End, "| Res: %dx%d", screen.width, screen.height);
-    mvprintw(1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size / geometry.defaultChunkSize);
-    mvprintw(2, col2End, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
-    mvprintw(2, col1End, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
-    mvprintw(3, col2End, "| %d FPS (%d max)", currentFps, screen.refreshRate);
-    mvprintw(3, col1End, "| frameTime: %.2f ms", frameTimeF);
-    mvprintw(0, 0, " -- INFO -------------------");
-    mvprintw(1, 0, "| WASD - movement");
-    mvprintw(2, 0, "| Arrow keys - camera");
-    mvprintw(3, 0, "|");
-    mvprintw(1, col2Start, "|");
-    mvprintw(2, col2Start, "|");
-    mvprintw(3, col2Start, "|");
+    mvwprintw(win, 0, col1End, " -- DEBUG -------------------- --------------------------");
+    mvwprintw(win, 1, col2End, "| Res: %dx%d", winWidth, winHeight);
+    mvwprintw(win, 1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size / geometry.defaultChunkSize);
+    mvwprintw(win, 2, col2End, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
+    mvwprintw(win, 2, col1End, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
+    mvwprintw(win, 3, col2End, "| %d FPS (%d max)", currentFps, screen.refreshRate);
+    mvwprintw(win, 3, col1End, "| frameTime: %.2f ms", frameTimeF);
+    mvwprintw(win, 0, 0, " -- INFO -------------------");
+    mvwprintw(win, 1, 0, "| WASD - movement");
+    mvwprintw(win, 2, 0, "| Arrow keys - camera");
+    mvwprintw(win, 2, winWidth / 2 - 16, "Time spent: %.2f", totalPlayTime);
+    mvwprintw(win, 3, 0, "|");
+    mvwprintw(win, 1, col2Start, "|");
+    mvwprintw(win, 2, col2Start, "|");
+    mvwprintw(win, 3, col2Start, "|");
+    wrefresh(win);
 }
 
 void printTile(int type)

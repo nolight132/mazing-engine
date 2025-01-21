@@ -1,3 +1,4 @@
+#include <game/gameLogic.h>
 #include <graphics/camera.h>
 #include <graphics/draw.h>
 #include <graphics/geometryBuffer.h>
@@ -17,25 +18,24 @@
 #include <utils.h>
 
 // Update loop adjusted for delta time. Called every frame.
-void deltaUpdate(Screen *screen, Camera *camera, Map *mapData, GeometryData *geometry, int input, double deltaTime)
+void deltaUpdate(Screen *screen, Camera *camera, LevelData *levelData, int input, double deltaTime, double playTime)
 {
-    updateGeometry(geometry, *camera);
-    drawCall(*screen, *camera, *geometry);
-    handleInput(input, camera, *geometry, deltaTime);
-    updateUi(*screen, *camera, *mapData, deltaTime);
-    Vector2 playerPos = toVector2(camera->position);
-    printMap(mapData->map, mapData->size, playerPos);
-}
+    updateGeometry(&levelData->geometry, *camera);
+    drawCall(*screen, *camera, levelData->geometry);
+    handleInput(input, camera, levelData->geometry, deltaTime);
+    updateUi(*screen, *camera, levelData->mapData, deltaTime);
 
-// Not using #define here to enable the user
-// to change the size of the maze later
-int size = 16;
+    if (playTime >= 60.0)
+    {
+        printf("You've been playing for 60 seconds!\n");
+    }
+}
 
 int main(int argc, char *argv[])
 {
     int refreshRate = 70;
     int c;
-    while ((c = getopt(argc, argv, "vu")) != -1)
+    while ((c = getopt(argc, argv, "vuf:")) != -1)
     {
         switch (c)
         {
@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
                 break;
             case 'u':
                 refreshRate = 999999;
+                break;
+            case 'f':
+                refreshRate = atoi(optarg);
                 break;
             default:
                 break;
@@ -57,42 +60,70 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
 
-    int chunkSize = 4;
-    if (size % chunkSize != 0)
-        size += chunkSize - (size % chunkSize);
+    LevelData levelData = {0};
+    levelData.size = 16;
+    levelData.chunkSize = 4;
 
-    Map mapData = generateMaze(size);
+    if (levelData.size % levelData.chunkSize != 0)
+        levelData.size += levelData.chunkSize - (levelData.size % levelData.chunkSize);
 
-    int **maze = mapData.map;
-    Vector2 startPos = mapData.start;
-    Vector3 startWorld = (Vector3){1.0f, startPos.x + 0.5f, startPos.y + 0.5f};
+    levelData.mapData = generateMaze(levelData.size);
+    levelData.startPos = levelData.mapData.start;
+    levelData.score = 0;
+    levelData.playTime = 0.0;
+    levelData.startWorld = (Vector3){1.0f, levelData.startPos.x + 0.5f, levelData.startPos.y + 0.5f};
 
-    GeometryData geometry = {0};
-    initGeometry(&geometry, chunkSize, maze, size);
+    initGeometry(&levelData.geometry, levelData.chunkSize, levelData.mapData.map, levelData.size);
 
     Screen screen = {0};
     Camera camera = {0};
     int renderDistance = 1; // Optimal value is 1, adjustable for debugging
     int fov = 50;
     initDraw();
-    initScreen(&screen, COLS, LINES, refreshRate);
-    initCamera(&camera, fov, renderDistance, startWorld, (Rotation){0.0f, 0.0f});
+    initScreen(&screen, COLS, LINES, refreshRate); // Reserve space for the debug window
+    initCamera(&camera, fov, renderDistance, levelData.startWorld, (Rotation){0.0f, 0.0f});
 
-    double frameDuration = 1e9 / (float)screen.refreshRate;
-    long long frameTime = frameDuration;
+    int debugHeight = 5;
+    int debugWidth = COLS;
+    int debugStartY = 0;
+    int debugStartX = 0;
+    WINDOW *debugWin = newwin(debugHeight, debugWidth, debugStartY, debugStartX);
+
+    double frameDuration = 1e9 / (float)screen.refreshRate; // Target frame duration in nanoseconds
     long long sleepTime = 0;
     struct timespec start, end;
+
+    // Timer for map printing
+    long long mapPrintInterval = 200 * 1e6; // 200 milliseconds in nanoseconds
+    long long lastMapPrintTime = 0;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     int ch;
     while ((ch = getch()) != 'q')
     { // Quit on 'q'
-        // Record the start time of the frame
-        clock_gettime(CLOCK_MONOTONIC, &start);
-        // Divide by 1e9 to convert nanoseconds to seconds
-        deltaUpdate(&screen, &camera, &mapData, &geometry, ch, frameTime / 1e9f);
+        // Record the end time of the frame
+        clock_gettime(CLOCK_MONOTONIC, &end);
+
+        // Calculate deltaTime in seconds
+        long long frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
+        double deltaTime = frameTime / 1e9; // Convert nanoseconds to seconds
+
+        // Update total playtime
+        levelData.playTime += deltaTime;
+
+        // Call deltaUpdate with the correct deltaTime and levelData.playTime
+        deltaUpdate(&screen, &camera, &levelData, ch, deltaTime, levelData.playTime);
+
+        // Check if it's time to print the map
+        long long currentTime = end.tv_sec * 1e9 + end.tv_nsec;
+        if (currentTime - lastMapPrintTime >= mapPrintInterval)
+        {
+            printMap(levelData.mapData.map, levelData.size, toVector2(camera.position));
+            lastMapPrintTime = currentTime; // Reset the timer
+        }
+
         // Calculate how long we need to sleep to maintain FPS
-        clock_gettime(CLOCK_MONOTONIC, &end); // Get time again after operations
-        frameTime = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
         sleepTime = frameDuration - frameTime;
         if (sleepTime > 0)
         {
@@ -101,11 +132,33 @@ int main(int argc, char *argv[])
             sleep.tv_nsec = sleepTime % (int)1e9; // Remainder as nanoseconds
             nanosleep(&sleep, NULL);              // Sleep for the remaining time
         }
-        drawDebugInfo(screen, camera, geometry, size, frameTime, sleepTime);
+
+        // Update start time for the next frame
+        start = end;
+
+        drawDebugInfo(debugWin, screen, camera, levelData.geometry, levelData.size, frameTime, sleepTime,
+                      levelData.playTime);
+        if (checkForWin(toVector2(camera.position), levelData.mapData.goal))
+        {
+            levelData.score = 1000 / levelData.playTime;
+            while (true)
+            {
+                victoryScreen(levelData.score, levelData.playTime);
+            }
+        }
         refresh();
     }
     endwin();
 
     rename(latestLogFilePath, logFilePath);
     fclose(logFile);
+
+    // Free allocated memory
+    free(logFilePath);
+    free(latestLogFilePath);
+
+    // Print total playtime when the game ends
+    printf("Total playtime: %.2f seconds\n", levelData.playTime);
+
+    return 0;
 }
