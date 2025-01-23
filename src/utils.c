@@ -1,3 +1,5 @@
+#include "game/gameLogic.h"
+#include "types.h"
 #include <errno.h>
 #include <graphics/camera.h>
 #include <graphics/screen.h>
@@ -136,8 +138,8 @@ FILE *createLog(char *logFileName, char *latestLogFilePath)
     return latestLogFile;
 }
 
-void drawDebugInfo(WINDOW *win, Screen screen, Camera camera, GeometryData geometry, int size, long long frameTime,
-                   long long sleepTime, double totalPlayTime)
+void drawDebugInfo(WINDOW *win, Screen screen, Camera camera, LevelData levelData, long long frameTime,
+                   long long sleepTime)
 {
     int winHeight, winWidth;
     getmaxyx(win, winHeight, winWidth);
@@ -147,21 +149,24 @@ void drawDebugInfo(WINDOW *win, Screen screen, Camera camera, GeometryData geome
     int col1End = winWidth - 58;
     int col2End = winWidth - 28;
     int col2Start = 28;
+    float distanceToGoal = distanceVector2(toVector2(camera.position), levelData.mapData.goal);
     mvwprintw(win, 0, col1End, " -- DEBUG -------------------- --------------------------");
     mvwprintw(win, 1, col2End, "| Res: %dx%d", winWidth, winHeight);
-    mvwprintw(win, 1, col1End, "| Map: %dx%d (%d chunks)", size, size, size * size / geometry.defaultChunkSize);
+    mvwprintw(win, 1, col1End, "| Map: %dx%d (%d chunks)", levelData.mapData.size, levelData.mapData.size,
+              levelData.mapData.size * levelData.mapData.size / levelData.geometry.defaultChunkSize);
     mvwprintw(win, 2, col2End, "| YXZ: (%.2f, %.2f, %.2f)", camera.position.y, camera.position.x, camera.position.z);
-    mvwprintw(win, 2, col1End, "| Chunk: (%d, %d)", geometry.currentChunkZ, geometry.currentChunkX);
+    mvwprintw(win, 2, col1End, "| Chunk: (%d, %d)", levelData.geometry.currentChunkZ, levelData.geometry.currentChunkX);
     mvwprintw(win, 3, col2End, "| %d FPS (%d max)", currentFps, screen.refreshRate);
     mvwprintw(win, 3, col1End, "| frameTime: %.2f ms", frameTimeF);
     mvwprintw(win, 0, 0, " -- INFO -------------------");
     mvwprintw(win, 1, 0, "| WASD - movement");
     mvwprintw(win, 2, 0, "| Arrow keys - camera");
-    mvwprintw(win, 2, winWidth / 2 - 16, "Time spent: %.2f", totalPlayTime);
+    mvwprintw(win, 2, winWidth / 2 - 16, "Time spent: %.2f", levelData.playTime);
     mvwprintw(win, 3, 0, "|");
     mvwprintw(win, 1, col2Start, "|");
     mvwprintw(win, 2, col2Start, "|");
     mvwprintw(win, 3, col2Start, "|");
+    mvwprintw(win, 3, 2, "Distance to goal: %.2f", distanceToGoal);
     wrefresh(win);
 }
 

@@ -23,14 +23,9 @@ void initDraw()
     nodelay(stdscr, TRUE); // Make getch non-blocking
 }
 
-void closeDraw()
-{
-    endwin();
-}
-
 char getGradientChar(float distance)
 {
-    const char *gradient = "#@&%*=+~-,. ";
+    const char *gradient = "#@%&*=+~-,. ";
     const int gradientLength = 11; // Number of gradient levels
     const int maxDistance = 4;     // Maximum distance to render
 

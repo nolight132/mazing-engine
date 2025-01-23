@@ -13,7 +13,6 @@
 #include <string.h>
 #include <time.h>
 #include <types.h>
-#include <ui/levelInfo.h>
 #include <unistd.h>
 #include <utils.h>
 
@@ -23,19 +22,15 @@ void deltaUpdate(Screen *screen, Camera *camera, LevelData *levelData, int input
     updateGeometry(&levelData->geometry, *camera);
     drawCall(*screen, *camera, levelData->geometry);
     handleInput(input, camera, levelData->geometry, deltaTime);
-    updateUi(*screen, *camera, levelData->mapData, deltaTime);
-
-    if (playTime >= 60.0)
-    {
-        printf("You've been playing for 60 seconds!\n");
-    }
 }
 
 int main(int argc, char *argv[])
 {
     int refreshRate = 70;
     int c;
-    while ((c = getopt(argc, argv, "vuf:")) != -1)
+    LevelData levelData = {0};
+    levelData.size = 16;
+    while ((c = getopt(argc, argv, "vuf:s:")) != -1)
     {
         switch (c)
         {
@@ -48,6 +43,9 @@ int main(int argc, char *argv[])
             case 'f':
                 refreshRate = atoi(optarg);
                 break;
+            case 's':
+                levelData.size = atoi(optarg);
+                break;
             default:
                 break;
         }
@@ -58,10 +56,6 @@ int main(int argc, char *argv[])
     FILE *logFile = createLog(logFilePath, latestLogFilePath);
     initLog(logFile);
 
-    srand(time(NULL));
-
-    LevelData levelData = {0};
-    levelData.size = 16;
     levelData.chunkSize = 4;
 
     if (levelData.size % levelData.chunkSize != 0)
@@ -136,8 +130,7 @@ int main(int argc, char *argv[])
         // Update start time for the next frame
         start = end;
 
-        drawDebugInfo(debugWin, screen, camera, levelData.geometry, levelData.size, frameTime, sleepTime,
-                      levelData.playTime);
+        drawDebugInfo(debugWin, screen, camera, levelData, frameTime, sleepTime);
         if (checkForWin(toVector2(camera.position), levelData.mapData.goal))
         {
             levelData.score = 1000 / levelData.playTime;
